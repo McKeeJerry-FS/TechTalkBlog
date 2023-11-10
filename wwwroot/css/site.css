@@ -17,11 +17,13 @@ html, body {
 
 body { /* fallback for old browsers */
     background-color: var(--cf-primaryColorLight);
-    /*background-image: url("/img/pexels-jakub-novacek-924824.jpg");*/
+    background-image: url("/img/pexels-suzy-hazelwood-1629236.jpg");
     background-repeat: no-repeat;
-    /*background-attachment: fixed;*/
+    background-attachment: fixed;
     background-position: center;
     background-size: auto;
+    -webkit-backdrop-filter: brightness(0.35) blur(5px);
+    backdrop-filter: brightness(0.35) blur(5px);
     display: flex;
     flex-direction: column;
     color: var(--cf-dark-color);
