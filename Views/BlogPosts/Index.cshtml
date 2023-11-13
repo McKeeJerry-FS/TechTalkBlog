@@ -26,7 +26,7 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.UpdatedDate)
-            </th>
+            </th> 
             <th>
                 @Html.DisplayNameFor(model => model.Slug)
             </th>
@@ -36,14 +36,17 @@
             <th>
                 @Html.DisplayNameFor(model => model.IsPublished)
             </th>
-            <th>
+             @* <th>
                 @Html.DisplayNameFor(model => model.ImageData)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ImageType)
-            </th>
+            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tags)
             </th>
             <th></th>
         </tr>
@@ -61,10 +64,10 @@
                 @Html.DisplayFor(modelItem => item.Content)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
+                @Html.DisplayFor(modelItem => item.CreatedDate.LocalDateTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate)
+                @Html.DisplayFor(modelItem => item.UpdatedDate.LocalDateTime)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Slug)
@@ -75,15 +78,22 @@
             <td>
                 @Html.DisplayFor(modelItem => item.IsPublished)
             </td>
-            <td>
+           @*  <td>
                 @Html.DisplayFor(modelItem => item.ImageData)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ImageType)
-            </td>
+            </td> *@
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
+            <td>
+                    @foreach (Tag tag in item.Tags)
+                    {
+                        <span>@tag.Name</span>
+                    }
+            </td>
+              
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

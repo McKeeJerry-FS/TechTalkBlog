@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,13 @@ namespace TechTalkBlog.Controllers
     public class TagsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public TagsController(ApplicationDbContext context)
+        public TagsController(ApplicationDbContext context,
+                              UserManager<BlogUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Tags
@@ -50,6 +54,7 @@ namespace TechTalkBlog.Controllers
         // GET: Tags/Create
         public IActionResult Create()
         {
+            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name");
             return View();
         }
 
@@ -60,8 +65,12 @@ namespace TechTalkBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Tag tag)
         {
+            ModelState.Remove("BlogUserId");
+
             if (ModelState.IsValid)
             {
+                tag.BlogUserId = _userManager.GetUserId(User);
+
                 _context.Add(tag);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -72,16 +81,19 @@ namespace TechTalkBlog.Controllers
         // GET: Tags/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            string? userId = _userManager.GetUserId(User);
+
             if (id == null || _context.Tags == null)
             {
                 return NotFound();
             }
 
-            var tag = await _context.Tags.FindAsync(id);
+            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Id == id && t.BlogUserId == userId);
             if (tag == null)
             {
                 return NotFound();
             }
+            ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", tag.BlogUserId);
             return View(tag);
         }
 
@@ -117,6 +129,10 @@ namespace TechTalkBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            string? userId = _userManager.GetUserId(User);
+
+            ViewData["BlogUserId"] = new SelectList(_context.Tags.Where(t => t.BlogUserId == userId), "Id", "Name", tag.BlogUserId);
+
             return View(tag);
         }
 

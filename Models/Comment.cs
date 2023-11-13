@@ -6,6 +6,10 @@ namespace TechTalkBlog.Models
     {
         public int Id { get; set; }
 
+        // Foreign Key
+        [Required]
+        public string? BlogUserId { get; set; }
+
         [Required]
         [StringLength(5000, ErrorMessage = "The {0} must be at least {2} and at most {1} charcters", MinimumLength = 2)]
         public string? Body { get; set; }

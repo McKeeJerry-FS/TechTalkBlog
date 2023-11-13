@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TechTalkBlog.Data;
@@ -11,9 +12,11 @@ using TechTalkBlog.Data;
 namespace TechTalkBlog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231113161557_003_Adjusted_DateTime_in_Models")]
+    partial class _003_Adjusted_DateTime_in_Models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,17 +188,13 @@ namespace TechTalkBlog.Data.Migrations
                         .HasMaxLength(600)
                         .HasColumnType("character varying(600)");
 
-                    b.Property<string>("BlogUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Content")
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("CreatedDate")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<byte[]>("ImageData")
@@ -218,7 +217,7 @@ namespace TechTalkBlog.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<DateTimeOffset>("UpdatedDate")
+                    b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -350,10 +349,6 @@ namespace TechTalkBlog.Data.Migrations
                     b.Property<int>("BlogPostId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("BlogUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Body")
                         .IsRequired()
                         .HasMaxLength(5000)
@@ -385,10 +380,6 @@ namespace TechTalkBlog.Data.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BlogUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()

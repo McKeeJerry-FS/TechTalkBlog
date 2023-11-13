@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TechTalkBlog.Data;
@@ -11,9 +12,11 @@ using TechTalkBlog.Data;
 namespace TechTalkBlog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231113162229_004_Adjusted_DateTime_in_Models_Back_To_DateTimeOffset")]
+    partial class _004_Adjusted_DateTime_in_Models_Back_To_DateTimeOffset
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,10 +188,6 @@ namespace TechTalkBlog.Data.Migrations
                         .HasMaxLength(600)
                         .HasColumnType("character varying(600)");
 
-                    b.Property<string>("BlogUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
@@ -350,10 +349,6 @@ namespace TechTalkBlog.Data.Migrations
                     b.Property<int>("BlogPostId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("BlogUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Body")
                         .IsRequired()
                         .HasMaxLength(5000)
@@ -385,10 +380,6 @@ namespace TechTalkBlog.Data.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BlogUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()

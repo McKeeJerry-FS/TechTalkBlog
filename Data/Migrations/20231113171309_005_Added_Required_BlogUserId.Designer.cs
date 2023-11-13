@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TechTalkBlog.Data;
@@ -11,9 +12,11 @@ using TechTalkBlog.Data;
 namespace TechTalkBlog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231113171309_005_Added_Required_BlogUserId")]
+    partial class _005_Added_Required_BlogUserId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -350,10 +353,6 @@ namespace TechTalkBlog.Data.Migrations
                     b.Property<int>("BlogPostId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("BlogUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Body")
                         .IsRequired()
                         .HasMaxLength(5000)
@@ -385,10 +384,6 @@ namespace TechTalkBlog.Data.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BlogUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
