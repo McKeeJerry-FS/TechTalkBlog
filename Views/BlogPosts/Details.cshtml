@@ -77,6 +77,30 @@
             @Html.DisplayFor(model => model.Category.Name)
         </dd>
     </dl>
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" asp-controller="Comments" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" name="BlogPostId" value="@Model.Id"/>
+                <div class="form-group">
+                    <label for="Body" class="control-label"></label>
+                    <textarea name="Body" class="form-control" required rows="4"></textarea>                  
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <ul>
+            @foreach(Comment comment in Model.Comments)
+            {
+                <li>@comment.Author: @comment.Body</li>
+            }
+        </ul>
+    </div>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

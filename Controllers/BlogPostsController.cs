@@ -19,24 +19,25 @@ namespace TechTalkBlog.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IBlogTagService _blogTagService;
+        private readonly IBlogService _blogService;
 
         public BlogPostsController(ApplicationDbContext context,                                   
-                                    IBlogTagService blogTagService)
+                                    IBlogTagService blogTagService,
+                                    IBlogService blogService)
         {
             _context = context;
             _blogTagService = blogTagService;
+            _blogService = blogService;
         }
 
         // GET: BlogPosts
         public async Task<IActionResult> Index(int? tagId)
         {
-            
 
             List<BlogPost> blogPosts = new();
+            // new service included
+            blogPosts = await _blogService.GetBlogPosts(tagId);
 
-            blogPosts = await _context.Posts.Include(b => b.Tags)
-                                            .Include(b => b.Category)                                            
-                                            .ToListAsync();
 
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
@@ -51,9 +52,8 @@ namespace TechTalkBlog.Controllers
                 return NotFound();
             }
 
-            var blogPost = await _context.Posts
-                .Include(b => b.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var blogPost = await _blogService.GetBlogDetails(id);
+
             if (blogPost == null)
             {
                 return NotFound();
@@ -82,22 +82,9 @@ namespace TechTalkBlog.Controllers
 
             if (ModelState.IsValid)
             {
+                // new BlogPost Service utilized
+                blogPost = await _blogService.Create(blogPost, selected);
                 
-                blogPost.CreatedDate = DateTimeOffset.Now.ToUniversalTime();
-
-                _context.Add(blogPost);
-                await _context.SaveChangesAsync();
-
-                foreach (int tagId in selected)
-                {
-                    Tag? tag = await _context.Tags.FindAsync(tagId);
-                    if(blogPost != null && tag != null)
-                    {
-                        blogPost.Tags.Add(tag);
-                    }
-                }
-                await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
             IEnumerable<int> currentTags = blogPost.Tags.Select(c => c.Id);
@@ -147,10 +134,8 @@ namespace TechTalkBlog.Controllers
             {
                 try
                 {
-                    blogPost.UpdatedDate = DateTimeOffset.Now.ToUniversalTime();
-                    // Image files service
-                    _context.Update(blogPost);
-                    await _context.SaveChangesAsync();
+                    // new BlogService in use
+                    blogPost = await _blogService.Edit(blogPost, selected);
 
                     // Handle categories
                     if (selected != null)

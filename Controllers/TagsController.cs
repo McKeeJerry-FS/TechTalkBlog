@@ -92,7 +92,7 @@ namespace TechTalkBlog.Controllers
             {
                 return NotFound();
             }
-            ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", tag.BlogUserId);
+            ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View(tag);
         }
 
@@ -130,7 +130,7 @@ namespace TechTalkBlog.Controllers
             }
             
 
-            ViewData["BlogUserId"] = new SelectList(_context.Tags, "Id", "Name", tag.BlogUserId);
+            ViewData["BlogUserId"] = new SelectList(_context.Tags, "Id", "Name");
 
             return View(tag);
         }

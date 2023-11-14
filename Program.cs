@@ -21,6 +21,7 @@ builder.Services.AddDefaultIdentity<BlogUser>(options => options.SignIn.RequireC
 // Add Custom Services
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IBlogTagService, BlogTagService>();
+builder.Services.AddScoped<IBlogService, BlogService>();
 // Email Service Here
 builder.Services.AddScoped<IEmailSender, EmailService>();
 // Email Configurations
