@@ -18,27 +18,24 @@ namespace TechTalkBlog.Controllers
     public class BlogPostsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<BlogUser> _userManager;
         private readonly IBlogTagService _blogTagService;
 
-        public BlogPostsController(ApplicationDbContext context,
-                                    UserManager<BlogUser> userManager,
+        public BlogPostsController(ApplicationDbContext context,                                   
                                     IBlogTagService blogTagService)
         {
             _context = context;
-            _userManager = userManager;
             _blogTagService = blogTagService;
         }
 
         // GET: BlogPosts
         public async Task<IActionResult> Index(int? tagId)
         {
-            string? _userId = _userManager.GetUserId(User);
+            
 
             List<BlogPost> blogPosts = new();
 
             blogPosts = await _context.Posts.Include(b => b.Tags)
-                                            .Where(b => b.BlogUserId == _userId)
+                                            .Include(b => b.Category)                                            
                                             .ToListAsync();
 
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
@@ -78,14 +75,14 @@ namespace TechTalkBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,BlogUserId,Abstract,Content,CreatedDate,Slug,IsDeleted,IsPublished,CategoryId,Tags,ImageFile")] BlogPost blogPost, IEnumerable<int> selected)
+        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,IsPublished,CategoryId,Tags,ImageFile")] BlogPost blogPost, IEnumerable<int> selected)
         {
             ModelState.Remove("BlogUserId");
 
 
             if (ModelState.IsValid)
             {
-                blogPost.BlogUserId = _userManager.GetUserId(User);
+                
                 blogPost.CreatedDate = DateTimeOffset.Now.ToUniversalTime();
 
                 _context.Add(blogPost);
@@ -103,10 +100,11 @@ namespace TechTalkBlog.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            IEnumerable<int> currentTags = blogPost.Tags.Select(c => c.Id);
 
-            string? _userId = _userManager.GetUserId(User);
+            
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["Tags"] = new MultiSelectList(_context.Tags.Where(t => t.BlogUserId == _userId), "Id", "Name", blogPost.Tags);
+            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
 
             return View(blogPost);
         }

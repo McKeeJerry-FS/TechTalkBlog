@@ -16,13 +16,12 @@ namespace TechTalkBlog.Controllers
     public class TagsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<BlogUser> _userManager;
+        
 
-        public TagsController(ApplicationDbContext context,
-                              UserManager<BlogUser> userManager)
+        public TagsController(ApplicationDbContext context)                            
         {
             _context = context;
-            _userManager = userManager;
+            
         }
 
         // GET: Tags
@@ -69,7 +68,7 @@ namespace TechTalkBlog.Controllers
 
             if (ModelState.IsValid)
             {
-                tag.BlogUserId = _userManager.GetUserId(User);
+                
 
                 _context.Add(tag);
                 await _context.SaveChangesAsync();
@@ -81,14 +80,14 @@ namespace TechTalkBlog.Controllers
         // GET: Tags/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            string? userId = _userManager.GetUserId(User);
+           
 
             if (id == null || _context.Tags == null)
             {
                 return NotFound();
             }
 
-            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Id == id && t.BlogUserId == userId);
+            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Id == id);
             if (tag == null)
             {
                 return NotFound();
@@ -129,9 +128,9 @@ namespace TechTalkBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            string? userId = _userManager.GetUserId(User);
+            
 
-            ViewData["BlogUserId"] = new SelectList(_context.Tags.Where(t => t.BlogUserId == userId), "Id", "Name", tag.BlogUserId);
+            ViewData["BlogUserId"] = new SelectList(_context.Tags, "Id", "Name", tag.BlogUserId);
 
             return View(tag);
         }
