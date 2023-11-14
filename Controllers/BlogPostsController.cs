@@ -52,6 +52,7 @@ namespace TechTalkBlog.Controllers
                 return NotFound();
             }
 
+            // New BlogService in Use
             var blogPost = await _blogService.GetBlogDetails(id);
 
             if (blogPost == null)
