@@ -97,7 +97,7 @@
         <ul>
             @foreach(Comment comment in Model.Comments)
             {
-                <li>@comment.Author: @comment.Body</li>
+                <li>@comment.Author.FullName: @comment.Body</li>
             }
         </ul>
     </div>

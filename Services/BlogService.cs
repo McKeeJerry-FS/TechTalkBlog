@@ -16,7 +16,7 @@ namespace TechTalkBlog.Services
         }
 
         #region GetBlogPosts
-        public async Task<List<BlogPost>> GetBlogPosts(int? tagId)
+        public async Task<List<BlogPost>> GetAllBlogPostsAsync(int? tagId)
         {
             List<BlogPost> blogPosts = new();
 
@@ -24,10 +24,7 @@ namespace TechTalkBlog.Services
                                             .Include(b => b.Category)
                                             .Include(b => b.Comments)
                                             .ToListAsync();
-
-            //ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            //ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
-
+           
             return blogPosts;
         }
 
@@ -35,7 +32,7 @@ namespace TechTalkBlog.Services
 
 
         #region GetBlogDetails
-        public async Task<BlogPost> GetBlogDetails(int? id)
+        public async Task<BlogPost> GetBlogDetailsAsync(int? id)
         {
 
 
@@ -51,7 +48,7 @@ namespace TechTalkBlog.Services
 
 
         #region Create(BlogPost blogPost, IEnumerable<int> selected)
-        public async Task<BlogPost> Create(BlogPost blogPost, IEnumerable<int> selected)
+        public async Task<BlogPost> CreateBlogPostAsync(BlogPost blogPost, IEnumerable<int> selected)
         {
 
 
@@ -77,7 +74,7 @@ namespace TechTalkBlog.Services
 
 
         #region Edit(BlogPost blogPost, IEnumerable<int> selected)
-        public async Task<BlogPost> Edit(BlogPost blogPost, IEnumerable<int> selected)
+        public async Task<BlogPost> EditBlogPostAsync(BlogPost blogPost, IEnumerable<int> selected)
         {
             blogPost.UpdatedDate = DateTimeOffset.Now.ToUniversalTime();
             // Image files service
@@ -86,6 +83,8 @@ namespace TechTalkBlog.Services
 
             return blogPost;
         }
+
+        
 
         #endregion
 

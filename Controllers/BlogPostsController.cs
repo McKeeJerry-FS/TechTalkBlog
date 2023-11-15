@@ -36,11 +36,11 @@ namespace TechTalkBlog.Controllers
 
             List<BlogPost> blogPosts = new();
             // new service included
-            blogPosts = await _blogService.GetBlogPosts(tagId);
+            blogPosts = await _blogService.GetAllBlogPostsAsync(tagId);
 
 
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
+            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name");
             return View(blogPosts);
         }
 
@@ -53,7 +53,7 @@ namespace TechTalkBlog.Controllers
             }
 
             // New BlogService in Use
-            var blogPost = await _blogService.GetBlogDetails(id);
+            var blogPost = await _blogService.GetBlogDetailsAsync(id);
 
             if (blogPost == null)
             {
@@ -67,7 +67,7 @@ namespace TechTalkBlog.Controllers
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
+            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name");
             return View();
         }
 
@@ -84,7 +84,7 @@ namespace TechTalkBlog.Controllers
             if (ModelState.IsValid)
             {
                 // new BlogPost Service utilized
-                blogPost = await _blogService.Create(blogPost, selected);
+                blogPost = await _blogService.CreateBlogPostAsync(blogPost, selected);
                 
                 return RedirectToAction(nameof(Index));
             }
@@ -92,7 +92,7 @@ namespace TechTalkBlog.Controllers
 
             
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
+            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", blogPost.Tags);
 
             return View(blogPost);
         }
@@ -136,7 +136,7 @@ namespace TechTalkBlog.Controllers
                 try
                 {
                     // new BlogService in use
-                    blogPost = await _blogService.Edit(blogPost, selected);
+                    blogPost = await _blogService.EditBlogPostAsync(blogPost, selected);
 
                     // Handle categories
                     if (selected != null)
@@ -162,7 +162,7 @@ namespace TechTalkBlog.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
+            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", blogPost.Tags);
             return View(blogPost);
         }
 
