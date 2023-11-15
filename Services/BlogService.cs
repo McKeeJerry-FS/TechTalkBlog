@@ -49,6 +49,41 @@ namespace TechTalkBlog.Services
 
         #endregion
 
+        #region GetArchivedBlogPosts
+        public async Task<IEnumerable<BlogPost>> GetAllArchivedBlogPostsAsync(int? tagId)
+        {
+
+            try
+            {
+
+                List<BlogPost> blogPosts = new();
+
+                blogPosts = await _context.Posts.Include(b => b.Tags)
+                                                .Include(b => b.Category)
+                                                .Include(b => b.Comments)
+                                                .ToListAsync();
+                List<BlogPost> selectedBlogPosts = new();
+                foreach (var blogPost in blogPosts)
+                {
+                    if (blogPost.IsDeleted == true && blogPost.IsPublished == true || blogPost.IsPublished == false)
+                    {
+                        selectedBlogPosts.Add(blogPost);
+                    }
+                }
+                return selectedBlogPosts;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        #endregion
+
+
 
         #region GetBlogDetails
         public async Task<BlogPost> GetBlogDetailsAsync(int? id)

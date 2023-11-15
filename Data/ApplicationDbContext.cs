@@ -16,6 +16,7 @@ namespace TechTalkBlog.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<BlogPost> Posts { get; set; }
+        
 
     }
 }

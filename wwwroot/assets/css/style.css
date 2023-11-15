@@ -915,6 +915,33 @@ button.axil-button, a.axil-link-button, input[type=submit], .form-group textarea
     background-position: center center;
 }
 
+
+/* Custom CSS*/
+.imgicon {
+    display: inline;
+    height: 3.5rem;
+    margin: 0rem .3rem;
+}
+
+figcaption {
+    color: var(--cf-dark-color);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.ck-editor__editable_inline {
+    min-height: 600px;
+}
+
+input.largerCheckbox {
+    width: 30px;
+    height: 30px;
+}
+
+label.form-check-label {
+    font-size: 22px;
+}
+
 /*----------------------
     Animation Css  
 -----------------------*/

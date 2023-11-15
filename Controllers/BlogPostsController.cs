@@ -45,6 +45,22 @@ namespace TechTalkBlog.Controllers
             return View(blogPosts);
         }
 
+        // GET: BlogPosts
+        public async Task<IActionResult> Archived(int? tagId)
+        {
+
+            IEnumerable<BlogPost> blogPosts;
+            // new service included
+
+            blogPosts = await _blogService.GetAllArchivedBlogPostsAsync(tagId);
+
+            // make service call
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name");
+            return View(blogPosts);
+        }
+
+
         // GET: BlogPosts/Details/5
         public async Task<IActionResult> Details(int? id)
         {

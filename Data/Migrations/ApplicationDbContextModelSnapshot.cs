@@ -34,7 +34,7 @@ namespace TechTalkBlog.Data.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("BlogPostTag");
+                    b.ToTable("BlogPostTag", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -221,7 +221,7 @@ namespace TechTalkBlog.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("TechTalkBlog.Models.BlogUser", b =>
@@ -329,7 +329,7 @@ namespace TechTalkBlog.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("TechTalkBlog.Models.Comment", b =>
@@ -367,7 +367,7 @@ namespace TechTalkBlog.Data.Migrations
 
                     b.HasIndex("BlogPostId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("TechTalkBlog.Models.Tag", b =>
@@ -385,7 +385,7 @@ namespace TechTalkBlog.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("BlogPostTag", b =>

@@ -4,7 +4,7 @@ namespace TechTalkBlog.Services
 {
     public class ImageService : IImageService
     {
-        private readonly string _defaultImage = "/img/silo_img.jpg";
+        private readonly string _defaultImage = "/img/img_placeholder.jpg";
 
         public string? ConvertByteArrayToFile(byte[]? fileData, string? extension)
         {

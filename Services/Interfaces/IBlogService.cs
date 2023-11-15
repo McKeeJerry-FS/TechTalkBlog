@@ -5,6 +5,9 @@ namespace TechTalkBlog.Services.Interfaces
     public interface IBlogService
     {
         public Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync(int? tagId);
+
+        public Task<IEnumerable<BlogPost>> GetAllArchivedBlogPostsAsync(int? tagId);
+
         public Task<BlogPost> GetBlogDetailsAsync(int? id);
 
         public Task CreateBlogPostAsync(BlogPost blogPost, IEnumerable<int> selected);
