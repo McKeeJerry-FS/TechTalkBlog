@@ -73,3 +73,9 @@ body {
     color: darkgray !important;
     border-color: lightgray;
 }
+
+.imgicon {
+    display: inline;
+    height: 3.5rem;
+    margin: 0rem .3rem;
+}
