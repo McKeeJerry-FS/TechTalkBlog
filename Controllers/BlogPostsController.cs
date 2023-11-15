@@ -34,8 +34,9 @@ namespace TechTalkBlog.Controllers
         public async Task<IActionResult> Index(int? tagId)
         {
 
-            List<BlogPost> blogPosts = new();
+            IEnumerable<BlogPost> blogPosts;
             // new service included
+           
             blogPosts = await _blogService.GetAllBlogPostsAsync(tagId);
 
 
@@ -174,9 +175,12 @@ namespace TechTalkBlog.Controllers
                 return NotFound();
             }
 
-            var blogPost = await _context.Posts
-                .Include(b => b.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //var blogPost = await _context.Posts
+            //    .Include(b => b.Category)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+
+            var blogPost = await _blogService.DeleteBlogPostAsync_Get(id);
+
             if (blogPost == null)
             {
                 return NotFound();
@@ -197,7 +201,9 @@ namespace TechTalkBlog.Controllers
             var blogPost = await _context.Posts.FindAsync(id);
             if (blogPost != null)
             {
-                _context.Posts.Remove(blogPost);
+                //_context.Posts.Remove(blogPost);
+                blogPost.IsDeleted = true;
+                _context.Posts.Update(blogPost);
             }
             
             await _context.SaveChangesAsync();
