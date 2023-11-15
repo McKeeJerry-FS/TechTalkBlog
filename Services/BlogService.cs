@@ -31,7 +31,7 @@ namespace TechTalkBlog.Services
                 List<BlogPost> selectedBlogPosts = new();
                 foreach (var blogPost in blogPosts)
                 {
-                    if (blogPost.IsDeleted != true)
+                    if (blogPost.IsDeleted != true && blogPost.IsPublished == true)
                     {
                         selectedBlogPosts.Add(blogPost);
                     }
@@ -55,13 +55,14 @@ namespace TechTalkBlog.Services
         {
             try
             {
-                var blogPost = await _context.Posts
+                BlogPost? blogPost = await _context.Posts
                     .Include(b => b.Category)
-                    .Include(b => b.Comments).ThenInclude(b => b.Author)
+                    .Include(b => b.Comments)
+                        .ThenInclude(b => b.Author)
                     .FirstOrDefaultAsync(m => m.Id == id);
 
 
-                return blogPost;
+                return blogPost!;
 
             }
             catch (Exception)
@@ -73,9 +74,34 @@ namespace TechTalkBlog.Services
         }
         #endregion
 
+        public async Task<BlogPost> GetBlogByIdAsync(int? id)
+        {
+             BlogPost blogPost = await _context.Posts
+                    .Include(b => b.Category)
+                    .Include(b => b.Comments)
+                        .ThenInclude(b => b.Author)
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+            return blogPost!;
+        }
+
+
+        public async Task UpdateBlogPostAsync(BlogPost blogPost)
+        {
+            try
+            {
+                _context.Posts.Update(blogPost);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
         #region Create(BlogPost blogPost, IEnumerable<int> selected)
-        public async Task<BlogPost> CreateBlogPostAsync(BlogPost blogPost, IEnumerable<int> selected)
+        public async Task CreateBlogPostAsync(BlogPost blogPost, IEnumerable<int> selected)
         {
             try
             {
@@ -94,7 +120,7 @@ namespace TechTalkBlog.Services
                 }
                 await _context.SaveChangesAsync();
 
-                return blogPost;
+                
 
             }
             catch (Exception)
@@ -114,7 +140,7 @@ namespace TechTalkBlog.Services
             try
             {
 
-                blogPost.UpdatedDate = DateTimeOffset.Now.ToUniversalTime();
+                
                 // Image files service
                 _context.Update(blogPost);
                 await _context.SaveChangesAsync();

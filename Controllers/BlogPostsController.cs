@@ -39,7 +39,7 @@ namespace TechTalkBlog.Controllers
            
             blogPosts = await _blogService.GetAllBlogPostsAsync(tagId);
 
-
+            // make service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name");
             return View(blogPosts);
@@ -48,7 +48,7 @@ namespace TechTalkBlog.Controllers
         // GET: BlogPosts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Posts == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -67,6 +67,8 @@ namespace TechTalkBlog.Controllers
         // GET: BlogPosts/Create
         public IActionResult Create()
         {
+
+            // make a service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name");
             return View();
@@ -85,13 +87,13 @@ namespace TechTalkBlog.Controllers
             if (ModelState.IsValid)
             {
                 // new BlogPost Service utilized
-                blogPost = await _blogService.CreateBlogPostAsync(blogPost, selected);
+                await _blogService.CreateBlogPostAsync(blogPost, selected);
                 
                 return RedirectToAction(nameof(Index));
             }
             IEnumerable<int> currentTags = blogPost.Tags.Select(c => c.Id);
 
-            
+            // make a service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
             ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", blogPost.Tags);
 
@@ -101,12 +103,12 @@ namespace TechTalkBlog.Controllers
         // GET: BlogPosts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Posts == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var blogPost = await _context.Posts.FindAsync(id);
+            BlogPost blogPost = await _blogService.GetBlogDetailsAsync(id);
             if (blogPost == null)
             {
                 return NotFound();
@@ -114,6 +116,7 @@ namespace TechTalkBlog.Controllers
 
             IEnumerable<int> currentTags = blogPost.Tags.Select(c => c.Id);
 
+            // make a service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
             ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", currentTags);
 
@@ -136,6 +139,7 @@ namespace TechTalkBlog.Controllers
             {
                 try
                 {
+                    blogPost.UpdatedDate = DateTimeOffset.Now.ToUniversalTime();
                     // new BlogService in use
                     blogPost = await _blogService.EditBlogPostAsync(blogPost, selected);
 
@@ -151,7 +155,7 @@ namespace TechTalkBlog.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BlogPostExists(blogPost.Id))
+                    if (!await BlogPostExistsAsync(blogPost.Id))
                     {
                         return NotFound();
                     }
@@ -162,6 +166,8 @@ namespace TechTalkBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            // make a service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
             ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", blogPost.Tags);
             return View(blogPost);
@@ -170,7 +176,7 @@ namespace TechTalkBlog.Controllers
         // GET: BlogPosts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Posts == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -179,7 +185,7 @@ namespace TechTalkBlog.Controllers
             //    .Include(b => b.Category)
             //    .FirstOrDefaultAsync(m => m.Id == id);
 
-            var blogPost = await _blogService.DeleteBlogPostAsync_Get(id);
+            var blogPost = await _blogService.GetBlogDetailsAsync(id);
 
             if (blogPost == null)
             {
@@ -194,25 +200,21 @@ namespace TechTalkBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Posts == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Posts'  is null.");
-            }
-            var blogPost = await _context.Posts.FindAsync(id);
+            
+            var blogPost = await _blogService.GetBlogByIdAsync(id);
             if (blogPost != null)
             {
                 //_context.Posts.Remove(blogPost);
                 blogPost.IsDeleted = true;
-                _context.Posts.Update(blogPost);
+               await _blogService.UpdateBlogPostAsync(blogPost);
             }
             
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BlogPostExists(int id)
+        private async Task<bool> BlogPostExistsAsync(int id)
         {
-          return (_context.Posts?.Any(e => e.Id == id)).GetValueOrDefault();
+          return ((await _blogService.GetAllBlogPostsAsync(id)).Any(e => e.Id == id));
         }
     }
 }
