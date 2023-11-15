@@ -83,13 +83,24 @@
                         </p>
                         <figure class="wp-block-image alignwide text-center">
                             <!--Blog Image here-->
-                            @Model.ImageFile
+
                             <img src="@_ImageService.ConvertByteArrayToFile(Model?.ImageData, Model?.ImageType)" alt="Show the blog's Image here or a default Image" />
                         </figure>
 
-                        @Model.Content
+                        @Html.Raw(Model?.Content)
 
-                        <div class="row">
+
+                        <div class="tagcloud">
+                            <!--Tags listed here-->
+                            @foreach (Tag tag in Model.Tags)
+                            {
+                                @* <span class="badge rounded-pill border border-1 bg-primary text-light fw-normal"><a href="#">@tag.Name</a></span> *@
+                                <a href="#">@tag.Name</a>
+                            }
+                           
+
+                        </div>
+                       @*  <div class="row">
                             <!--Tags listed here-->
                             @foreach (Tag tag in Model.Tags)
                             {
@@ -97,7 +108,7 @@
                             }
                             
 
-                        </div>
+                        </div> *@
                         <div class="social-share-block">
                             <div class="post-like">
                                 <a id="likesButton">

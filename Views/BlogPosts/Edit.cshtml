@@ -1,4 +1,6 @@
 ﻿@model TechTalkBlog.Models.BlogPost
+@using TechTalkBlog.Services.Interfaces
+@inject IImageService _ImageService
 
 @{
     ViewData["Title"] = "Edit";
@@ -8,7 +10,75 @@
 
 <h4>BlogPost</h4>
 <hr />
-<div class="row">
+<main class="container mt-5">
+
+    <form asp-action="Edit" asp-controller="BlogPosts" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Slug" />
+        <input type="hidden" asp-for="CreatedDate" />
+        <input type="hidden" asp-for="UpdatedDate" />
+        <input type="hidden" asp-for="ImageData" />
+        <input type="hidden" asp-for="ImageType" />
+        <div class="row">
+            <div class="col-12 col-lg-4">
+                <div class="form-group">
+                    <label asp-for="ImageFile" class="control-label">Blog Post Image</label>
+                    <img class="img-fluid border rounded-3 mb-2 border border-1 border-secondary" style="max-height: 350px;" src="@_ImageService.ConvertByteArrayToFile(Model?.ImageData, Model?.ImageType)" id="blogImage">
+                    <input asp-for="ImageFile" type="file" class="form-control mt-3 pt-2 border border-1 border-secondary" accept=".png,.jpg,.jpeg,.gif"
+                           onchange="document.getElementById('blogImage').src = window.URL.createObjectURL(this.files[0])" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control border border-1 border-secondary" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Abstract" class="control-label"></label>
+                    <textarea asp-for="Abstract" class="form-control border border-1 border-secondary" rows="1"></textarea>
+                    <span asp-validation-for="Abstract" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label"></label>
+                    <select asp-for="CategoryId" class="form-control border border-1 border-secondary" asp-items="ViewBag.CategoryId"></select>
+                    
+                </div>
+                <div class="form-group">
+                    <label asp-for="Tags" class="control-label">Tags</label>
+                    <select asp-for="Tags" class="form-control border border-1 border-secondary" asp-items="ViewBag.Tags"></select>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8">
+                <div class="form-group">
+                    <label asp-for="Content" class="control-label"></label>
+                    <textarea asp-for="Content" class="editor form-control border border-1 border-secondary" rows="25"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group d-flex justify-content-end">
+            <label class="form-check-label me-4 mt-2" asp-for="IsPublished">Publish?</label>
+            <input class="largerCheckbox me-20 border border-1 border-secondary" type="checkbox" asp-for="IsPublished" />
+            <span asp-validation-for="IsPublished" class="text-danger"></span>
+        </div>
+        <div class="form-group d-flex justify-content-end">
+            <label class="form-check-label me-4 mt-2" asp-for="IsDeleted">Delete?</label>
+            <input class="largerCheckbox me-20 border border-1 border-secondary" type="checkbox" asp-for="IsDeleted" />
+            <span asp-validation-for="IsDeleted" class="text-danger"></span>
+        </div>
+        <div class="form-group d-flex justify-content-end">
+            <input type="submit" value="Update" class="btn btn-primary" />
+        </div>
+    </form>
+    <div class="form-group mt-5 start-0">
+        <a asp-action="Index">Back</a>
+    </div>
+</main>
+
+
+
+
+@* <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" asp-controller="BlogPosts" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -60,12 +130,24 @@
             </div>
         </form>
     </div>
-</div>
+</div> *@
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!--CK Editor-->
+    <script src="https://cdn.ckeditor.com/ckeditor5/37.1.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('.editor'), {
+                licenseKey: '',
+            })
+            .then(editor => {
+                window.editor = editor;
+            });
+    </script>
 }

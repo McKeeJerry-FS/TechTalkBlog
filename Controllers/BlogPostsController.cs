@@ -20,14 +20,17 @@ namespace TechTalkBlog.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IBlogTagService _blogTagService;
         private readonly IBlogService _blogService;
+        private readonly IImageService _imageService;
 
         public BlogPostsController(ApplicationDbContext context,                                   
                                     IBlogTagService blogTagService,
-                                    IBlogService blogService)
+                                    IBlogService blogService,
+                                    IImageService imageService)
         {
             _context = context;
             _blogTagService = blogTagService;
             _blogService = blogService;
+            _imageService = imageService;
         }
 
         // GET: BlogPosts
@@ -95,13 +98,22 @@ namespace TechTalkBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,IsPublished,CategoryId,Tags,ImageFile")] BlogPost blogPost, IEnumerable<int> selected)
+        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,IsPublished,CategoryId,Tags,ImageFile,ImageData,ImageType")] BlogPost blogPost, IEnumerable<int> selected)
         {
             ModelState.Remove("BlogUserId");
 
 
             if (ModelState.IsValid)
             {
+                blogPost.CreatedDate = DateTimeOffset.Now.ToUniversalTime();
+
+                if (blogPost.ImageFile != null)
+                {
+                    // use image service
+                    blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsynC(blogPost.ImageFile);
+                    blogPost.ImageType = blogPost.ImageFile.ContentType;
+                }
+
                 // new BlogPost Service utilized
                 await _blogService.CreateBlogPostAsync(blogPost, selected);
                 
@@ -156,6 +168,11 @@ namespace TechTalkBlog.Controllers
                 try
                 {
                     blogPost.UpdatedDate = DateTimeOffset.Now.ToUniversalTime();
+                    if (blogPost.ImageFile != null)
+                    {
+                        blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsynC(blogPost.ImageFile);
+                        blogPost.ImageType = blogPost.ImageFile.ContentType;
+                    }
                     // new BlogService in use
                     blogPost = await _blogService.EditBlogPostAsync(blogPost, selected);
 

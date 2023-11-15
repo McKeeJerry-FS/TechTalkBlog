@@ -94,6 +94,7 @@ namespace TechTalkBlog.Services
                     .Include(b => b.Category)
                     .Include(b => b.Comments)
                         .ThenInclude(b => b.Author)
+                    .Include(b => b.Tags)
                     .FirstOrDefaultAsync(m => m.Id == id);
 
 
@@ -111,7 +112,7 @@ namespace TechTalkBlog.Services
 
         public async Task<BlogPost> GetBlogByIdAsync(int? id)
         {
-             BlogPost blogPost = await _context.Posts
+             BlogPost? blogPost = await _context.Posts
                     .Include(b => b.Category)
                     .Include(b => b.Comments)
                         .ThenInclude(b => b.Author)
@@ -140,7 +141,7 @@ namespace TechTalkBlog.Services
         {
             try
             {
-                blogPost.CreatedDate = DateTimeOffset.Now.ToUniversalTime();
+                
 
                 _context.Add(blogPost);
                 await _context.SaveChangesAsync();

@@ -70,6 +70,14 @@
     --color-extra03: #FBFBFD;
     --color-extra04: #1A1A1A;
     --color-extra05: #242424;
+    --jm-primaryColor: #0869b8;
+    --jm-primaryColorDark: #002a4e;
+    --jm-primaryColorLight: #edf5fc;
+    --jm-secondaryColor: var(--jm-cyan-800);
+    --jm-secondaryColorLight: #FFF8EC;
+    --jm-dark-color: #131313;
+    --jm-light-gray: #d9d9d9;
+    --jm-light-color: #eeeeee;
     --radius: 10px;
     --radius-big: 16px;
     --radius-small: 6px;
@@ -941,6 +949,11 @@ input.largerCheckbox {
 label.form-check-label {
     font-size: 22px;
 }
+
+nav, header {
+    background-color: var(--jm-secondaryColor);
+}
+
 
 /*----------------------
     Animation Css  
