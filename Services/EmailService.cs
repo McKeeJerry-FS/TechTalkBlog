@@ -3,7 +3,6 @@ using MailKit.Security;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using MimeKit;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using TechTalkBlog.Models;
 
 

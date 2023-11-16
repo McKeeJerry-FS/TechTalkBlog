@@ -19,5 +19,7 @@ namespace TechTalkBlog.Services.Interfaces
         public Task UpdateBlogPostAsync(BlogPost blogPost);
 
         public Task<BlogPost> GetBlogByIdAsync(int? id);
+
+        public Task<IEnumerable<Category>> GetCategoriesAsync();
     }
 }

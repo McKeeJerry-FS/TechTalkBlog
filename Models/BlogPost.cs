@@ -23,6 +23,9 @@ namespace TechTalkBlog.Models
         [Display(Name = "Updated Date")]
         public DateTimeOffset UpdatedDate { get; set; }
 
+        [Display(Name = "Revival Date")]
+        public DateTimeOffset RevivalDate { get; set; }
+
         public string? Slug { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsPublished { get; set; }

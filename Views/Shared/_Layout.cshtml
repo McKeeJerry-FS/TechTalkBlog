@@ -33,6 +33,7 @@
     
 </head>
 <body class="m-3">
+    <partial name="_logoutPartial" />
     <div class="main-wrapper">
         <div class="mouse-cursor cursor-outer"></div>
         <div class="mouse-cursor cursor-inner"></div>
@@ -79,13 +80,6 @@
                                                 <a class="hover-flip-item-wrapper" asp-action="Index" asp-controller="BlogPosts">
                                                     <span class="">
                                                         <span>All Posts</span>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="hover-flip-item-wrapper" asp-action="Archived" asp-controller="BlogPosts">
-                                                    <span class="">
-                                                        <span>All Archived Posts</span>
                                                     </span>
                                                 </a>
                                             </li>
@@ -153,6 +147,13 @@
                                                         </span>
                                                     </a>
                                                 </li>
+                                                <li>
+                                                    <a class="hover-flip-item-wrapper" asp-action="Archived" asp-controller="BlogPosts">
+                                                        <span class="hover-flip-item">
+                                                            <span data-text="Archieved">Archived Posts</span>
+                                                        </span>
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </li>
                                     }
@@ -185,13 +186,13 @@
                                             <img src="" alt="">
                                             <span class="status online"></span>
                                         </span>
-                                        <span>FullName</span>
+                                        <span>@User.Identity!.Name</span>
                                     </a>
                                     @if (User.Identity!.IsAuthenticated)
                                     {
                                         <div class="dropdown-menu animate__slideInDown">
                                             <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"><p style="color:black">My Profile</p></a>
-                                            <a class="dropdown-item" href=""><p style="color:black">Logout</p></a>
+                                            <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()"><p style="color:black">Logout</p></a>
                                         </div>
                                     }
                                     else

@@ -26,7 +26,7 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.UpdatedDate)
-            </th>             
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsDeleted)
             </th>
@@ -36,11 +36,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.Comments)
             </th>
-             @* <th>
-                @Html.DisplayNameFor(model => model.ImageData)
+            @* <th>
+            @Html.DisplayNameFor(model => model.ImageData)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageType)
+            @Html.DisplayNameFor(model => model.ImageType)
             </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.Category)
@@ -52,55 +52,56 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Abstract)
+                </td>
+                <td>
+                    @Html.Raw(item.Content)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate.LocalDateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedDate.LocalDateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsDeleted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsPublished)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Comments.Count)
+                </td>
+                @*  <td>
+            @Html.DisplayFor(modelItem => item.ImageData)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Abstract)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate.LocalDateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate.LocalDateTime)
-            </td>            
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPublished)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comments.Count)
-            </td>
-           @*  <td>
-                @Html.DisplayFor(modelItem => item.ImageData)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageType)
+            @Html.DisplayFor(modelItem => item.ImageType)
             </td> *@
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
                     @foreach (Tag tag in item.Tags)
                     {
                         <span class="badge rounded-pill border border-1 bg-primary text-light fw-normal">@tag.Name</span>
                     }
-            </td>
-              
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-               
-            </td>
-        </tr>
-}
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

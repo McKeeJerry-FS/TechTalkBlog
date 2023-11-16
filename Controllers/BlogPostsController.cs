@@ -114,6 +114,15 @@ namespace TechTalkBlog.Controllers
                     blogPost.ImageType = blogPost.ImageFile.ContentType;
                 }
 
+                // Handle Tags
+                if (selected != null)
+                {
+                    // Remove the current categories
+                    await _blogTagService.RemoveTagsFromBlogPostAsync(blogPost.Id);
+                    // Add the updated categories
+                    await _blogTagService.AddTagsToBlogPostAsync(selected, blogPost.Id);
+                }
+
                 // new BlogPost Service utilized
                 await _blogService.CreateBlogPostAsync(blogPost, selected);
                 
@@ -173,10 +182,13 @@ namespace TechTalkBlog.Controllers
                         blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsynC(blogPost.ImageFile);
                         blogPost.ImageType = blogPost.ImageFile.ContentType;
                     }
+
+                    // Future Enhancement: If blog post is brought back from archive, add a Revival Date to show the date the post returns
+
                     // new BlogService in use
                     blogPost = await _blogService.EditBlogPostAsync(blogPost, selected);
 
-                    // Handle categories
+                    // Handle Tags
                     if (selected != null)
                     {
                         // Remove the current categories

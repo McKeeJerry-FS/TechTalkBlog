@@ -1,106 +1,48 @@
-﻿@model IEnumerable<TechTalkBlog.Models.BlogPost>
+﻿@using TechTalkBlog.Services.Interfaces
+@model IEnumerable<TechTalkBlog.Models.BlogPost>
+@inject IImageService _imageService
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Abstract)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedDate)
-            </th>             
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPublished)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comments)
-            </th>
-             @* <th>
-                @Html.DisplayNameFor(model => model.ImageData)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageType)
-            </th> *@
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tags)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Abstract)
-            </td>
-            <td>
-                @Html.Raw(item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate.LocalDateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate.LocalDateTime)
-            </td>            
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPublished)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comments.Count)
-            </td>
-           @*  <td>
-                @Html.DisplayFor(modelItem => item.ImageData)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageType)
-            </td> *@
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
-                    @foreach (Tag tag in item.Tags)
-                    {
-                        <span class="badge rounded-pill border border-1 bg-primary text-light fw-normal">@tag.Name</span>
-                    }
-            </td>
-              
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-               
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<!-- Start Author Area  -->
+<partial name="_AuthorAreaPartial" />
+<!-- End Author Area  -->
+<!-- Start Post List Wrapper  -->
+<div class="axil-post-list-area axil-section-gap bg-color-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-title">
+                    <h2 class="title mb--40">Welcome to my weblog!</h2>
+                </div>
+            </div>
+
+            <!-- Start Post List  -->
+            <div class="col-lg-8 col-xl-8">
+                @* [List Blogs] *@
+                @foreach(BlogPost blogPost in Model)
+                {
+                    <!-- blog card partial start  -->
+                    <partial name="_BlogCardPartial" model="blogPost" />
+                    <!-- blog card partial end  -->
+                }
+            </div>
+            <!-- End Post List  -->
+
+
+            <!-- Start Sidebar Area  -->
+            <div class="col-lg-4 col-xl-4 mt_md--40 mt_sm--40">
+                <partial name="_SideBarPartial" />
+            </div>
+            
+            <!-- End Sidebar Area  -->
+
+        </div>
+    </div>
+</div>
+<!-- End Post List Wrapper  -->
+

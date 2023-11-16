@@ -112,11 +112,11 @@ namespace TechTalkBlog.Services
 
         public async Task<BlogPost> GetBlogByIdAsync(int? id)
         {
-             BlogPost? blogPost = await _context.Posts
-                    .Include(b => b.Category)
-                    .Include(b => b.Comments)
-                        .ThenInclude(b => b.Author)
-                    .FirstOrDefaultAsync(m => m.Id == id);
+            BlogPost? blogPost = await _context.Posts
+                   .Include(b => b.Category)
+                   .Include(b => b.Comments)
+                       .ThenInclude(b => b.Author)
+                   .FirstOrDefaultAsync(m => m.Id == id);
 
             return blogPost!;
         }
@@ -141,7 +141,7 @@ namespace TechTalkBlog.Services
         {
             try
             {
-                
+
 
                 _context.Add(blogPost);
                 await _context.SaveChangesAsync();
@@ -156,7 +156,7 @@ namespace TechTalkBlog.Services
                 }
                 await _context.SaveChangesAsync();
 
-                
+
 
             }
             catch (Exception)
@@ -176,7 +176,7 @@ namespace TechTalkBlog.Services
             try
             {
 
-                
+
                 // Image files service
                 _context.Update(blogPost);
                 await _context.SaveChangesAsync();
@@ -218,6 +218,12 @@ namespace TechTalkBlog.Services
 
 
 
+        }
+
+        public async Task<IEnumerable<Category>> GetCategoriesAsync()
+        {
+            IEnumerable<Category> categories = await _context.Categories.ToListAsync();
+            return categories;
         }
     }
 }
