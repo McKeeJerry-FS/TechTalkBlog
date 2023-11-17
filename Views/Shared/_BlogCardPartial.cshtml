@@ -6,7 +6,7 @@
 <div class="content-block post-list-view mt--30">
     <div class="post-thumbnail">
         <a asp-action="Details" asp-controller="BlogPosts" asp-route-id="@Model?.Id">
-            <img src="@_ImageService.ConvertByteArrayToFile(Model?.ImageData, Model?.ImageType, DefaultImage.BlogPostImage)" alt="Post Images">
+            <img src="@_ImageService.ConvertByteArrayToFile(Model?.ImageData, Model?.ImageType, DefaultImage.BlogPostImage)" alt="Post Images" class="border border-2 border-secondary">
         </a>
 @*         <a class="video-popup icon-color-secondary size-medium position-top-center" href="post-details.html"><span class="play-icon"></span></a>
  *@    </div>

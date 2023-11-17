@@ -4,7 +4,7 @@ namespace TechTalkBlog.Services.Interfaces
 {
     public interface IBlogService
     {
-        public Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync(int? tagId);
+        public Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync();
 
         public Task<IEnumerable<BlogPost>> GetAllArchivedBlogPostsAsync(int? tagId);
 
@@ -21,5 +21,11 @@ namespace TechTalkBlog.Services.Interfaces
         public Task<BlogPost> GetBlogByIdAsync(int? id);
 
         public Task<IEnumerable<Category>> GetCategoriesAsync();
+        
+        public Task<IEnumerable<BlogPost>> GetPopularBlogs();
+
+        public Task<List<BlogPost>> FilterBlogPostByCategory(int? categoryId);
+
+        public IEnumerable<BlogPost> SearchBlogPost(string searchString);
     }
 }

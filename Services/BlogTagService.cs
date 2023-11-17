@@ -29,7 +29,7 @@ namespace TechTalkBlog.Services
 
                     if (blogPost != null && tag != null)
                     {
-                        blogPost.Tags.Add(tag);
+                        blogPost.Tags!.Add(tag);
                     }
                 }
 
@@ -52,7 +52,7 @@ namespace TechTalkBlog.Services
 
                 if (blogPost != null)
                 {
-                    blogPost.Tags.Clear();
+                    blogPost.Tags!.Clear();
                     _context.Update(blogPost);
                     await _context.SaveChangesAsync();
                 }

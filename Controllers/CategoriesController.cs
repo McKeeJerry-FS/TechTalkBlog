@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechTalkBlog.Data;
 using TechTalkBlog.Models;
+using TechTalkBlog.Services.Interfaces;
 
 namespace TechTalkBlog.Controllers
 {
@@ -15,10 +16,13 @@ namespace TechTalkBlog.Controllers
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
 
-        public CategoriesController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context,
+                                    IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         // GET: Categories
@@ -58,12 +62,18 @@ namespace TechTalkBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageFile")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageFile, ImageData, ImageType")] Category category)
         {
             if (ModelState.IsValid)
             {
 
                 // Image Check
+                if (category.ImageFile != null)
+                {
+                    // use image service
+                    category.ImageData = await _imageService.ConvertFileToByteArrayAsynC(category.ImageFile);
+                    category.ImageType = category.ImageFile.ContentType;
+                }
 
                 _context.Add(category);
                 await _context.SaveChangesAsync();
@@ -93,7 +103,7 @@ namespace TechTalkBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImageFile")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImageFile,ImageData,ImageType")] Category category)
         {
             if (id != category.Id)
             {
@@ -104,6 +114,13 @@ namespace TechTalkBlog.Controllers
             {
                 try
                 {
+                    if (category.ImageFile != null)
+                    {
+                        // use image service
+                        category.ImageData = await _imageService.ConvertFileToByteArrayAsynC(category.ImageFile);
+                        category.ImageType = category.ImageFile.ContentType;
+                    }
+
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                 }

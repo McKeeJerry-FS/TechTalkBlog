@@ -1,5 +1,4 @@
-﻿
-@using TechTalkBlog.Services.Interfaces
+﻿@using TechTalkBlog.Services.Interfaces
 @inject IBlogService _blogService
 @inject IImageService _imageService
 @using TechTalkBlog.Enums
@@ -15,7 +14,7 @@
             @foreach (Category category in (await _blogService.GetCategoriesAsync()).Take(4))
             {
                 <li class="cat-item">
-                    <a href="#" class="inner">
+                    <a asp-action="Index" asp-controller="BlogPosts" name="categoryId" class="inner">
                         <div class="thumbnail">
                             <img src="@_imageService.ConvertByteArrayToFile(category.ImageData, category.ImageType, DefaultImage.CategoryImage)" alt="">
                         </div>
@@ -33,10 +32,10 @@
     <!-- Start Single Widget  -->
     <div class="axil-single-widget widget widget_search mb--30">
         <h5 class="widget-title">Search</h5>
-        <form action="#">
+        <form asp-action="SearchIndex" asp-controller="BlogPosts" method="get">
             <div class="axil-search form-group">
                 <button type="submit" class="search-button"><i class="fal fa-search"></i></button>
-                <input type="text" class="form-control" placeholder="Search">
+                <input type="text" class="form-control" placeholder="Search" name="searchString" value="@ViewBag.Search"/>
             </div>
         </form>
     </div>
@@ -46,76 +45,32 @@
         <h5 class="widget-title">Popular on Blogar</h5>
         <!-- Start Post List  -->
         <div class="post-medium-block">
-            @* @foreach (BlogPost blogPost in Model)
+            @foreach (BlogPost blogPost in (await _blogService.GetPopularBlogs()).Take(5))
             {
                 <div class="content-block post-medium mb--20">
                     <div class="post-thumbnail">
-                        <a href="post-details.html">
-                            <img src="assets/images/small-images/blog-sm-01.jpg" alt="Post Images">
+                        <a asp-action="Details" asp-controller="BlogPosts" asp-route-id="@blogPost?.Id">
+                            <img src="@_imageService.ConvertByteArrayToFile(blogPost.ImageData, blogPost.ImageType, DefaultImage.BlogPostImage)" alt="Post Images">
                         </a>
                     </div>
                     <div class="post-content">
                         <h6 class="title">
-                            <a href="post-details.html">
-                                The underrated design book that transformed the way I
-                                work
+                            <a asp-action="Details" asp-controller="BlogPosts" asp-route-id="@blogPost?.Id">
+                                @blogPost!.Title
                             </a>
                         </h6>
                         <div class="post-meta">
                             <ul class="post-meta-list">
-                                <li>Feb 17, 2019</li>
-                                <li>300k Views</li>
+                                <li>@blogPost!.CreatedDate.ToString("MMM dd, yyyy")</li>
+                                <li>@blogPost!.Comments!.Count()</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-            } *@
-            <!-- Start Single Post  -->
-            <!-- End Single Post  -->
-            <!-- Start Single Post  -->
-            <div class="content-block post-medium mb--20">
-                <div class="post-thumbnail">
-                    <a href="post-details.html">
-                        <img src="assets/images/small-images/blog-sm-02.jpg" alt="Post Images">
-                    </a>
-                </div>
-                <div class="post-content">
-                    <h6 class="title">
-                        <a href="post-details.html">Here’s what you should (and shouldn’t) do when</a>
-                    </h6>
-                    <div class="post-meta">
-                        <ul class="post-meta-list">
-                            <li>Feb 17, 2019</li>
-                            <li>300k Views</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- End Single Post  -->
-            <!-- Start Single Post  -->
-            <div class="content-block post-medium mb--20">
-                <div class="post-thumbnail">
-                    <a href="post-details.html">
-                        <img src="assets/images/small-images/blog-sm-03.jpg" alt="Post Images">
-                    </a>
-                </div>
-                <div class="post-content">
-                    <h6 class="title">
-                        <a href="post-details.html">
-                            How a developer and designer duo at Deutsche Bank keep
-                            remote
-                        </a>
-                    </h6>
-                    <div class="post-meta">
-                        <ul class="post-meta-list">
-                            <li>Feb 17, 2019</li>
-                            <li>300k Views</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- End Single Post  -->
+            }
+            
+            
 
         </div>
         <!-- End Post List  -->
@@ -127,11 +82,10 @@
         <h5 class="widget-title">Stay In Touch</h5>
         <!-- Start Post List  -->
         <ul class="social-icon md-size justify-content-center">
-            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-            <li><a href="#"><i class="fab fa-slack"></i></a></li>
-            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+            <li><a href="https://www.instagram.com/jay_codes_20/" taget="_blank"><i class="fab fa-instagram"></i></a></li>
+            <li><a href="https://github.com/McKeeJerry-FS" taget="_blank"><i class="fab fa-github"></i></a></li>
+            <li><a href="https://www.linkedin.com/in/jjerry-mckee-jr/" taget="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+            <li><a href="mailto:jerry.mckee.jr0882@gmail.com" taget="_blank"><i class="far fa-envelope"></i></a></li>
         </ul>
         <!-- End Post List  -->
     </div>

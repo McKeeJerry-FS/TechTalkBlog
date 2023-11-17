@@ -16,7 +16,7 @@ namespace TechTalkBlog.Services
         }
 
         #region GetBlogPosts
-        public async Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync(int? tagId)
+        public async Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync()
         {
 
             try
@@ -46,9 +46,9 @@ namespace TechTalkBlog.Services
             }
 
         }
-
         #endregion
 
+        
         #region GetArchivedBlogPosts
         public async Task<IEnumerable<BlogPost>> GetAllArchivedBlogPostsAsync(int? tagId)
         {
@@ -83,8 +83,6 @@ namespace TechTalkBlog.Services
 
         #endregion
 
-
-
         #region GetBlogDetails
         public async Task<BlogPost> GetBlogDetailsAsync(int? id)
         {
@@ -110,6 +108,7 @@ namespace TechTalkBlog.Services
         }
         #endregion
 
+        #region Task<BlogPost> GetBlogByIdAsync(int? id)
         public async Task<BlogPost> GetBlogByIdAsync(int? id)
         {
             BlogPost? blogPost = await _context.Posts
@@ -120,8 +119,41 @@ namespace TechTalkBlog.Services
 
             return blogPost!;
         }
+        #endregion
 
+        #region Task<IEnumerable<BlogPost>> GetPopularBlogs()
+        public async Task<IEnumerable<BlogPost>> GetPopularBlogs()
+        {
+            try
+            {
 
+                List<BlogPost> blogPosts = new();
+
+                blogPosts = await _context.Posts.Include(b => b.Tags)
+                                                .Include(b => b.Category)
+                                                .Include(b => b.Comments)
+                                                .ToListAsync();
+                List<BlogPost> selectedBlogPosts = new();
+                foreach (var blogPost in blogPosts)
+                {
+                    if (blogPost.IsDeleted != true && blogPost.IsPublished == true)
+                    {
+                        selectedBlogPosts.Add(blogPost);
+                    }
+                }
+
+                return selectedBlogPosts.OrderByDescending(b => b.Comments!.Count());
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        #endregion
+
+        #region Task UpdateBlogPostAsync(BlogPost blogPost)
         public async Task UpdateBlogPostAsync(BlogPost blogPost)
         {
             try
@@ -134,7 +166,8 @@ namespace TechTalkBlog.Services
 
                 throw;
             }
-        }
+        } 
+        #endregion
 
         #region Create(BlogPost blogPost, IEnumerable<int> selected)
         public async Task CreateBlogPostAsync(BlogPost blogPost, IEnumerable<int> selected)
@@ -169,7 +202,6 @@ namespace TechTalkBlog.Services
         }
         #endregion
 
-
         #region Edit(BlogPost blogPost, IEnumerable<int> selected)
         public async Task<BlogPost> EditBlogPostAsync(BlogPost blogPost, IEnumerable<int> selected)
         {
@@ -193,6 +225,7 @@ namespace TechTalkBlog.Services
         }
         #endregion
 
+        #region Task<BlogPost> DeleteBlogPostAsync_Get(int? id)
         public async Task<BlogPost> DeleteBlogPostAsync_Get(int? id)
         {
             try
@@ -210,14 +243,66 @@ namespace TechTalkBlog.Services
                 throw;
             }
 
-        }
+        } 
+        #endregion
 
-        public async Task<BlogPost> DeleteBlogPostAsync_Post(int id)
+
+        public async Task<List<BlogPost>> FilterBlogPostByCategory(int? categoryId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<BlogPost> blogPost = new();
 
+                Category? category = new();
+                category = await _context.Categories.Include(c => c.BlogPosts)
+                                                    .FirstOrDefaultAsync(c => c.Id == categoryId);
+                if(category != null)
+                {
+                    blogPost = category.BlogPosts!.ToList();
+                }
 
+                return blogPost;
+                
+                
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
+       
+        public IEnumerable<BlogPost> SearchBlogPost(string searchString)
+        {
+            try
+            {
+                searchString = searchString.Trim().ToLower();
+                IEnumerable<BlogPost> blogPosts = _context.Posts
+                                                          .Where(b => b.IsPublished == true && b.IsDeleted == false)
+                                                          .Where(b => b.Title!.ToLower().Contains(searchString)
+                                                                   || (!string.IsNullOrEmpty(b.Abstract) && b.Abstract.ToLower().Contains(searchString))
+                                                                   || b.Content!.ToLower().Contains(searchString)
+                                                                   || b.Tags.Any(t => t.Name!.ToLower().Contains(searchString))
+                                                                   || b.Category!.Name!.ToLower().Contains(searchString)
+                                                                   || b.Comments.Any(c => c.Body!.ToLower().Contains(searchString)
+                                                                                       || c.Author!.FirstName!.ToLower().Contains(searchString)
+                                                                                       || c.Author!.LastName!.ToLower().Contains(searchString))
+                                                                 )
+                                                           .Include(b => b.Category)
+                                                           .Include(b => b.Tags)
+                                                           .Include(b => b.Comments)
+                                                            .ThenInclude(b => b.Author)
+                                                           .AsNoTracking()
+                                                           .OrderByDescending(b => b.CreatedDate)
+                                                           .AsEnumerable();
+
+                return blogPosts;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Category>> GetCategoriesAsync()

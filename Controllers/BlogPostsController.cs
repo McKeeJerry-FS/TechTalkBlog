@@ -11,6 +11,7 @@ using TechTalkBlog.Data;
 using TechTalkBlog.Models;
 using TechTalkBlog.Services;
 using TechTalkBlog.Services.Interfaces;
+using X.PagedList;
 
 namespace TechTalkBlog.Controllers
 {
@@ -34,17 +35,30 @@ namespace TechTalkBlog.Controllers
         }
 
         // GET: BlogPosts
-        public async Task<IActionResult> Index(int? tagId)
+        public async Task<IActionResult> Index(int? categoryId, int? pageNum)
         {
 
-            IEnumerable<BlogPost> blogPosts;
+            IPagedList<BlogPost> blogPosts;
             // new service included
-           
-            blogPosts = await _blogService.GetAllBlogPostsAsync(tagId);
+            int pageSize = 4;
+            int page = pageNum ?? 1;
+
+
+
+            if (categoryId == null)
+            {
+                // normal operation
+                blogPosts = await(await _blogService.GetAllBlogPostsAsync()).ToPagedListAsync(page, pageSize);
+            }
+            else
+            {
+                // filtered by category
+                blogPosts = await(await _blogService.FilterBlogPostByCategory(categoryId)).ToPagedListAsync(page, pageSize);
+            }
 
             // make service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name");
+            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
             return View(blogPosts);
         }
 
@@ -59,7 +73,7 @@ namespace TechTalkBlog.Controllers
 
             // make service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name");
+            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
             return View(blogPosts);
         }
 
@@ -124,15 +138,15 @@ namespace TechTalkBlog.Controllers
                 }
 
                 // new BlogPost Service utilized
-                await _blogService.CreateBlogPostAsync(blogPost, selected);
+                await _blogService.CreateBlogPostAsync(blogPost, selected!);
                 
                 return RedirectToAction(nameof(Index));
             }
-            IEnumerable<int> currentTags = blogPost.Tags.Select(c => c.Id);
+            IEnumerable<int> currentTags = blogPost.Tags!.Select(c => c.Id);
 
             // make a service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", blogPost.Tags);
+            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
 
             return View(blogPost);
         }
@@ -151,11 +165,11 @@ namespace TechTalkBlog.Controllers
                 return NotFound();
             }
 
-            IEnumerable<int> currentTags = blogPost.Tags.Select(c => c.Id);
+            IEnumerable<int> currentTags = blogPost.Tags!.Select(c => c.Id);
 
             // make a service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", currentTags);
+            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", currentTags);
 
             return View(blogPost);
         }
@@ -214,7 +228,7 @@ namespace TechTalkBlog.Controllers
 
             // make a service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", blogPost.Tags);
+            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
             return View(blogPost);
         }
 
@@ -257,9 +271,31 @@ namespace TechTalkBlog.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        // Search Feature
+        public async Task<IActionResult> SearchIndex(string? searchString, int? pageNum)
+        {
+            
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            int pageSize = 4;
+            int page = pageNum ?? 1;
+
+            IPagedList<BlogPost> blogPosts = await _blogService.SearchBlogPost(searchString).ToPagedListAsync(page, pageSize);
+            ViewData["Search"] = searchString;
+            return View(nameof(Index), blogPosts);
+
+        }
+
+
+
+
         private async Task<bool> BlogPostExistsAsync(int id)
         {
-          return ((await _blogService.GetAllBlogPostsAsync(id)).Any(e => e.Id == id));
+          return ((await _blogService.GetAllBlogPostsAsync()).Any(e => e.Id == id));
         }
     }
 }

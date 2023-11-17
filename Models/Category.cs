@@ -20,6 +20,6 @@ namespace TechTalkBlog.Models
         public string? ImageType { get; set; }
 
         // Navigation Props
-        public virtual ICollection<BlogPost>? BlogPosts { get; set; } = new HashSet<BlogPost>();
+        public virtual ICollection<BlogPost> BlogPosts { get; set; } = new HashSet<BlogPost>();
     }
 }
