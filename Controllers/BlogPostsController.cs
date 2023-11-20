@@ -78,6 +78,22 @@ namespace TechTalkBlog.Controllers
         }
 
 
+        // GET: BlogPosts
+        public async Task<IActionResult> Draft(int? tagId)
+        {
+
+            IEnumerable<BlogPost> blogPosts;
+            // new service included
+
+            blogPosts = await _blogService.GetAllDraftBlogPostsAsync(tagId);
+
+            // make service call
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
+            return View(blogPosts);
+        }
+
+
         // GET: BlogPosts/Details/5
         public async Task<IActionResult> Details(int? id)
         {

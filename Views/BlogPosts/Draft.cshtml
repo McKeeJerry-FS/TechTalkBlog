@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<TechTalkBlog.Models.BlogPost>
 
 @{
-    ViewData["Title"] = "Archived";
+    ViewData["Title"] = "Draft";
 }
 
-<h1>Archived Blog Posts</h1>
+<h1>Draft Blog Posts</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -86,7 +86,7 @@
             @Html.DisplayFor(modelItem => item.ImageType)
             </td> *@
                 <td>
-                    @Html.DisplayFor(modelItem => item.Category.Name)
+                    @Html.DisplayFor(modelItem => item.Category!.Name)
                 </td>
                 <td>
                     @foreach (Tag tag in item.Tags)
