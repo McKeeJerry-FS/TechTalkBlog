@@ -15,6 +15,9 @@ namespace TechTalkBlog.Services
             _context = context;
         }
 
+        
+        
+
         #region GetBlogPosts
         public async Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync()
         {
@@ -47,7 +50,6 @@ namespace TechTalkBlog.Services
 
         }
         #endregion
-
         
         #region GetArchivedBlogPosts
         public async Task<IEnumerable<BlogPost>> GetAllArchivedBlogPostsAsync(int? tagId)
@@ -116,7 +118,6 @@ namespace TechTalkBlog.Services
         }
 
         #endregion
-
 
         #region GetBlogDetails
         public async Task<BlogPost> GetBlogDetailsAsync(int? id)
@@ -278,21 +279,22 @@ namespace TechTalkBlog.Services
                 throw;
             }
 
-        } 
+        }
         #endregion
 
+        #region DeleteBlogPostAsync(int id)
         public async Task DeleteBlogPostAsync(int id)
         {
             try
             {
                 var blogpost = await _context.Posts.FirstOrDefaultAsync(b => b.Id == id);
-                if(blogpost != null)
+                if (blogpost != null)
                 {
                     _context.Posts.Remove(blogpost);
                 }
 
                 await _context.SaveChangesAsync();
-               
+
 
             }
             catch (Exception)
@@ -302,7 +304,9 @@ namespace TechTalkBlog.Services
             }
         }
 
+        #endregion
 
+        #region FilterBlogPostByCategory(int? categoryId)
         public async Task<List<BlogPost>> FilterBlogPostByCategory(int? categoryId)
         {
             try
@@ -312,14 +316,14 @@ namespace TechTalkBlog.Services
                 Category? category = new();
                 category = await _context.Categories.Include(c => c.BlogPosts)
                                                     .FirstOrDefaultAsync(c => c.Id == categoryId);
-                if(category != null)
+                if (category != null)
                 {
                     blogPost = category.BlogPosts!.ToList();
                 }
 
                 return blogPost;
-                
-                
+
+
             }
             catch (Exception)
             {
@@ -327,7 +331,9 @@ namespace TechTalkBlog.Services
                 throw;
             }
         }
-       
+        #endregion
+
+        #region SearchBlogPost(string searchString)
         public IEnumerable<BlogPost> SearchBlogPost(string searchString)
         {
             try
@@ -360,11 +366,14 @@ namespace TechTalkBlog.Services
                 throw;
             }
         }
+        #endregion
 
+        #region GetCategoriesAsync()
         public async Task<IEnumerable<Category>> GetCategoriesAsync()
         {
             IEnumerable<Category> categories = await _context.Categories.ToListAsync();
             return categories;
-        }
+        } 
+        #endregion
     }
 }

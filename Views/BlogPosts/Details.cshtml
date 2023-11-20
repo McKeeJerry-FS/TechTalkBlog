@@ -150,6 +150,21 @@
                             </div>
                         </div>
                         <!-- End Author  -->
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <ul class="list-unstyled" >
+                                <li>
+                                    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> 
+                                </li>
+                                <li>
+                                    <a asp-action="Archive" asp-route-id="@Model.Id">Archive</a>
+                                </li>
+                            </ul>
+ 
+                                    
+                        }
+
                         <!-- Start Comment Form Area  -->
                         <div class="axil-comment-area">
 
