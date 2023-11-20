@@ -22,16 +22,19 @@ namespace TechTalkBlog.Controllers
         private readonly IBlogTagService _blogTagService;
         private readonly IBlogService _blogService;
         private readonly IImageService _imageService;
+        private readonly ILogger<BlogPostsController> _logger;
 
         public BlogPostsController(ApplicationDbContext context,                                   
                                     IBlogTagService blogTagService,
                                     IBlogService blogService,
-                                    IImageService imageService)
+                                    IImageService imageService,
+                                    ILogger<BlogPostsController> logger)
         {
             _context = context;
             _blogTagService = blogTagService;
             _blogService = blogService;
             _imageService = imageService;
+            _logger = logger;
         }
 
         // GET: BlogPosts
@@ -261,7 +264,7 @@ namespace TechTalkBlog.Controllers
             //    .FirstOrDefaultAsync(m => m.Id == id);
 
             var blogPost = await _blogService.GetBlogDetailsAsync(id);
-
+            _logger.LogInformation("Blog post successfully archived!");
             if (blogPost == null)
             {
                 return NotFound();

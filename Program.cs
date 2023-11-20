@@ -22,6 +22,9 @@ builder.Services.AddIdentity<BlogUser, IdentityRole>(options => options.SignIn.R
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Add Custom Services
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IBlogTagService, BlogTagService>();
