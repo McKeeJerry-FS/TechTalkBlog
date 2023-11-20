@@ -179,7 +179,7 @@ namespace TechTalkBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,BlogUserId,Abstract,Content,CreatedDate,UpdatedDate,Slug,IsDeleted,IsPublished,CategoryId,ImageFile,ImageData,ImageType")] BlogPost blogPost, IEnumerable<int> selected)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,BlogUserId,Abstract,Content,CreatedDate,UpdatedDate,Slug,IsArchived,IsPublished,CategoryId,ImageFile,ImageData,ImageType")] BlogPost blogPost, IEnumerable<int> selected)
         {
             if (id != blogPost.Id)
             {
@@ -232,7 +232,66 @@ namespace TechTalkBlog.Controllers
             return View(blogPost);
         }
 
-        // GET: BlogPosts/Delete/5
+        // GET: BlogPosts/Archive/5
+        public async Task<IActionResult> Archive(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            //var blogPost = await _context.Posts
+            //    .Include(b => b.Category)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+
+            var blogPost = await _blogService.GetBlogDetailsAsync(id);
+
+            if (blogPost == null)
+            {
+                return NotFound();
+            }
+
+            return View(blogPost);
+        }
+
+        // POST: BlogPosts/Delete/5
+        [HttpPost, ActionName("Archive")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ArchiveConfirmed(int id)
+        {
+            
+            var blogPost = await _blogService.GetBlogByIdAsync(id);
+            if (blogPost != null)
+            {
+                //_context.Posts.Remove(blogPost);
+                blogPost.IsArchived = true;
+               await _blogService.UpdateBlogPostAsync(blogPost);
+            }
+            
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        // Search Feature
+        public async Task<IActionResult> SearchIndex(string? searchString, int? pageNum)
+        {
+            
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            int pageSize = 4;
+            int page = pageNum ?? 1;
+
+            IPagedList<BlogPost> blogPosts = await _blogService.SearchBlogPost(searchString).ToPagedListAsync(page, pageSize);
+            ViewData["Search"] = searchString;
+            return View(nameof(Index), blogPosts);
+
+        }
+
+        // Delete
+        // GET: BlogPosts/Archive/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -259,37 +318,17 @@ namespace TechTalkBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            
+
             var blogPost = await _blogService.GetBlogByIdAsync(id);
             if (blogPost != null)
             {
                 //_context.Posts.Remove(blogPost);
-                blogPost.IsDeleted = true;
-               await _blogService.UpdateBlogPostAsync(blogPost);
+                blogPost.IsArchived = true;
+                await _blogService.DeleteBlogPostAsync(id);
             }
-            
+
             return RedirectToAction(nameof(Index));
         }
-
-
-        // Search Feature
-        public async Task<IActionResult> SearchIndex(string? searchString, int? pageNum)
-        {
-            
-
-            if (string.IsNullOrWhiteSpace(searchString))
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            int pageSize = 4;
-            int page = pageNum ?? 1;
-
-            IPagedList<BlogPost> blogPosts = await _blogService.SearchBlogPost(searchString).ToPagedListAsync(page, pageSize);
-            ViewData["Search"] = searchString;
-            return View(nameof(Index), blogPosts);
-
-        }
-
 
 
 

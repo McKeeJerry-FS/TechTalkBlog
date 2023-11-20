@@ -28,7 +28,7 @@
                 @Html.DisplayNameFor(model => model.UpdatedDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
+                @Html.DisplayNameFor(model => model.IsArchived)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsPublished)
@@ -71,7 +71,7 @@
                     @Html.DisplayFor(modelItem => item.UpdatedDate.LocalDateTime)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsDeleted)
+                    @Html.DisplayFor(modelItem => item.IsArchived)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsPublished)

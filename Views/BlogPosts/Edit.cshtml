@@ -63,13 +63,18 @@
             <span asp-validation-for="IsPublished" class="text-danger"></span>
         </div>
         <div class="form-group d-flex justify-content-end">
-            <label class="form-check-label me-4 mt-2" asp-for="IsDeleted">Delete?</label>
-            <input class="largerCheckbox me-20 border border-1 border-secondary" type="checkbox" asp-for="IsDeleted" />
-            <span asp-validation-for="IsDeleted" class="text-danger"></span>
+            <label class="form-check-label me-4 mt-2" asp-for="IsArchived">Archive?</label>
+            <input class="largerCheckbox me-20 border border-1 border-secondary" type="checkbox" asp-for="IsArchived" />
+            <span asp-validation-for="IsArchived" class="text-danger"></span>
         </div>
         <div class="form-group d-flex justify-content-end">
-            <input type="submit" value="Update" class="btn btn-primary" />
+            <input type="submit" value="Update" class="btn btn-primary m-1" />
+            @if (Model?.IsArchived == true)
+            {
+                <input type="submit" value="Delete" class="btn btn-primary m-1" />
+            }
         </div>
+        
     </form>
     <div class="form-group mt-5 start-0">
         <a asp-action="Index">Back</a>

@@ -27,7 +27,7 @@ namespace TechTalkBlog.Models
         public DateTimeOffset RevivalDate { get; set; }
 
         public string? Slug { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsArchived { get; set; }
         public bool IsPublished { get; set; }
         public int CategoryId { get; set; } // Foreign Key
 

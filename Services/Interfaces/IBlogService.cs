@@ -27,5 +27,6 @@ namespace TechTalkBlog.Services.Interfaces
         public Task<List<BlogPost>> FilterBlogPostByCategory(int? categoryId);
 
         public IEnumerable<BlogPost> SearchBlogPost(string searchString);
+        public Task DeleteBlogPostAsync(int id);
     }
 }

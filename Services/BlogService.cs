@@ -31,7 +31,7 @@ namespace TechTalkBlog.Services
                 List<BlogPost> selectedBlogPosts = new();
                 foreach (var blogPost in blogPosts)
                 {
-                    if (blogPost.IsDeleted != true && blogPost.IsPublished == true)
+                    if (blogPost.IsArchived != true && blogPost.IsPublished == true)
                     {
                         selectedBlogPosts.Add(blogPost);
                     }
@@ -65,7 +65,7 @@ namespace TechTalkBlog.Services
                 List<BlogPost> selectedBlogPosts = new();
                 foreach (var blogPost in blogPosts)
                 {
-                    if (blogPost.IsDeleted == true && blogPost.IsPublished == true || blogPost.IsPublished == false)
+                    if (blogPost.IsArchived == true && blogPost.IsPublished == true || blogPost.IsPublished == false)
                     {
                         selectedBlogPosts.Add(blogPost);
                     }
@@ -136,7 +136,7 @@ namespace TechTalkBlog.Services
                 List<BlogPost> selectedBlogPosts = new();
                 foreach (var blogPost in blogPosts)
                 {
-                    if (blogPost.IsDeleted != true && blogPost.IsPublished == true)
+                    if (blogPost.IsArchived != true && blogPost.IsPublished == true)
                     {
                         selectedBlogPosts.Add(blogPost);
                     }
@@ -246,6 +246,27 @@ namespace TechTalkBlog.Services
         } 
         #endregion
 
+        public async Task DeleteBlogPostAsync(int id)
+        {
+            try
+            {
+                var blogpost = await _context.Posts.FirstOrDefaultAsync(b => b.Id == id);
+                if(blogpost != null)
+                {
+                    _context.Posts.Remove(blogpost);
+                }
+
+                await _context.SaveChangesAsync();
+               
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
 
         public async Task<List<BlogPost>> FilterBlogPostByCategory(int? categoryId)
         {
@@ -278,7 +299,7 @@ namespace TechTalkBlog.Services
             {
                 searchString = searchString.Trim().ToLower();
                 IEnumerable<BlogPost> blogPosts = _context.Posts
-                                                          .Where(b => b.IsPublished == true && b.IsDeleted == false)
+                                                          .Where(b => b.IsPublished == true && b.IsArchived == false)
                                                           .Where(b => b.Title!.ToLower().Contains(searchString)
                                                                    || (!string.IsNullOrEmpty(b.Abstract) && b.Abstract.ToLower().Contains(searchString))
                                                                    || b.Content!.ToLower().Contains(searchString)
