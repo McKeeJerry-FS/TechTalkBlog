@@ -2,10 +2,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 using TechTalkBlog.Data;
 using TechTalkBlog.Models;
 using TechTalkBlog.Services;
 using TechTalkBlog.Services.Interfaces;
+
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,9 +38,40 @@ builder.Services.AddScoped<IEmailSender, EmailService>();
 // Email Configurations
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
+// Add API configs
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Tech Pulse Blogging Site",
+        Version = "v1",
+        Description = "A blogging website featuring blogs about tech, coding, as well as my life as a developer",
+        Contact = new OpenApiContact
+        {
+            Name = "Jerry McKee Jr",
+            Email = "jerry.mckee.jr0882@gmail.com",
+            Url = new Uri("https://jmj-techdevportfolio.netlify.app/")
+        }
+    });
+
+    var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
+});
+
+
+
 builder.Services.AddMvc();
 
+builder.Services.AddCors(obj =>
+{
+    obj.AddPolicy("DefaultPolicy",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 var app = builder.Build();
+app.UseCors("DefaultPolicy");
 
 var loggerFactory = app.Services.GetService<ILoggerFactory>();
 loggerFactory.AddFile(builder.Configuration["Logging:LogFilePath"]!.ToString());
@@ -56,6 +92,15 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+// Add Swagger UI Config
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "PublicAPI v1");
+    c.InjectStylesheet("/css/swagger.css");
+    c.InjectJavascript("/js/swager.js");
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
