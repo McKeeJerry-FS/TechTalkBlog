@@ -45,7 +45,7 @@
         <h5 class="widget-title">Popular on Blogar</h5>
         <!-- Start Post List  -->
         <div class="post-medium-block">
-            @foreach (BlogPost blogPost in (await _blogService.GetPopularBlogs()).Take(5))
+            @foreach (BlogPost blogPost in (await _blogService.GetPopularBlogsAsync()).Take(5))
             {
                 <div class="content-block post-medium mb--20">
                     <div class="post-thumbnail">

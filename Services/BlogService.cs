@@ -202,7 +202,7 @@ namespace TechTalkBlog.Services
         #endregion
 
         #region Task<IEnumerable<BlogPost>> GetPopularBlogs()
-        public async Task<IEnumerable<BlogPost>> GetPopularBlogs()
+        public async Task<IEnumerable<BlogPost>> GetPopularBlogsAsync()
         {
             try
             {

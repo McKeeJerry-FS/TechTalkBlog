@@ -38,7 +38,7 @@ namespace TechTalkBlog.Controllers
             
         }
 
-        // AdminArea
+        
 
         #region Task<IActionResult> Index(int? categoryId, int? pageNum)
         // GET: BlogPosts
@@ -105,6 +105,24 @@ namespace TechTalkBlog.Controllers
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
             return View(blogPosts);
+        }
+
+        #endregion
+
+        #region Task<IActionResult> Popular(int? pageNum)
+        [AllowAnonymous]
+        public async Task<IActionResult> Popular(int? pageNum)
+        {
+            int pageSize = 4;
+            int page = pageNum ?? 1;
+
+            IPagedList<BlogPost> popularBlogs;
+            popularBlogs = await (await _blogService.GetPopularBlogsAsync()).ToPagedListAsync(page, pageSize);
+
+            // make service call
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
+            return View(popularBlogs);
         }
 
         #endregion

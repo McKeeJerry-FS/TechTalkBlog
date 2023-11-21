@@ -24,7 +24,7 @@ namespace TechTalkBlog.Services.Interfaces
 
         public Task<IEnumerable<Category>> GetCategoriesAsync();
         
-        public Task<IEnumerable<BlogPost>> GetPopularBlogs();
+        public Task<IEnumerable<BlogPost>> GetPopularBlogsAsync();
 
         public Task<List<BlogPost>> FilterBlogPostByCategory(int? categoryId);
 
