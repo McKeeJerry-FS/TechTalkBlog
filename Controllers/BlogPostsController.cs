@@ -417,6 +417,8 @@ namespace TechTalkBlog.Controllers
                 //_context.Posts.Remove(blogPost);
                 blogPost.IsArchived = true;
                 await _blogService.UpdateBlogPostAsync(blogPost);
+                _logger.LogInformation(message: "Blog successfully archived");
+                
             }
 
             return RedirectToAction(nameof(Index));
