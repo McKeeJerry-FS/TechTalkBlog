@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,25 +21,74 @@ namespace TechTalkBlog.Controllers
     public class BlogPostsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BlogUser> _userManager;
+        private readonly ILogger<BlogPostsController> _logger;
+        private readonly IConfiguration _configuration;
         private readonly IBlogTagService _blogTagService;
         private readonly IBlogService _blogService;
         private readonly IImageService _imageService;
-        
+        private readonly IEmailSender _emailService;
+
 
         public BlogPostsController(ApplicationDbContext context,                                   
                                     IBlogTagService blogTagService,
                                     IBlogService blogService,
-                                    IImageService imageService
-                                    )
+                                    IImageService imageService,
+                                    UserManager<BlogUser> userManager,
+                                    ILogger<BlogPostsController> logger,
+                                    IConfiguration configuration,
+                                    IEmailSender emailService)
         {
             _context = context;
             _blogTagService = blogTagService;
             _blogService = blogService;
             _imageService = imageService;
-            
+            _userManager = userManager;
+            _logger = logger;
+            _configuration = configuration;
+            _emailService = emailService;
         }
 
-        
+        #region Task<IActionResult> ContactMe()
+        [Authorize]
+        public async Task<IActionResult> ContactMe()
+        {
+            string? blogUserId = _userManager.GetUserId(User);
+            if (blogUserId == null)
+            {
+                return NotFound();
+            }
+            BlogUser? blogUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == blogUserId);
+            return View(blogUser);
+        }
+
+        #endregion
+
+        #region Task<IActionResult> ContactMe([Bind("FirstName, LastName, Email")] BlogUser blogUser, string? message)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ContactMe([Bind("FirstName, LastName, Email")] BlogUser blogUser, string? message)
+        {
+            string? swalMessage = string.Empty;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string? adminEmail = _configuration["AdminEmail"] ?? Environment.GetEnvironmentVariable("AdminEmail");
+                    await _emailService.SendEmailAsync(adminEmail!, $"Contact Me Mesage from - {blogUser.FullName}", message!);
+                    swalMessage = "Email Sent Successfully";
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                swalMessage = "Error: Unable to send message";
+            }
+            return RedirectToAction("Index", new { swalMessage });
+        }
+
+        #endregion
 
         #region Task<IActionResult> Index(int? categoryId, int? pageNum)
         // GET: BlogPosts
