@@ -56,7 +56,8 @@ namespace TechTalkBlog.Controllers
             if (categoryId == null)
             {
                 // normal operation
-                blogPosts = await (await _blogService.GetAllBlogPostsAsync()).ToPagedListAsync(page, pageSize);
+                blogPosts = await (await _blogService.GetBlogPostsAsync()).ToPagedListAsync(page, pageSize);
+               
             }
             else
             {
@@ -321,9 +322,6 @@ namespace TechTalkBlog.Controllers
                 return NotFound();
             }
 
-            //var blogPost = await _context.Posts
-            //    .Include(b => b.Category)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
 
             var blogPost = await _blogService.GetBlogDetailsAsync(id);
             
@@ -331,6 +329,7 @@ namespace TechTalkBlog.Controllers
             {
                 return NotFound();
             }
+            
 
             return View(blogPost);
         }
@@ -390,11 +389,8 @@ namespace TechTalkBlog.Controllers
                 return NotFound();
             }
 
-            //var blogPost = await _context.Posts
-            //    .Include(b => b.Category)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-
-            var blogPost = await _blogService.GetBlogDetailsAsync(id);
+            
+            BlogPost? blogPost = await _blogService.GetBlogDetailsAsync(id);
 
             if (blogPost == null)
             {
@@ -427,10 +423,123 @@ namespace TechTalkBlog.Controllers
 
         #endregion
 
+        //*************************************\\
+        #region Admin Only Functions
+
+        #region Task<IActionResult> AuthorArea(int? pageNum)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AuthorArea(int? pageNum)
+        {
+            int pageSize = 3;
+            int page = pageNum ?? 1;
+
+            IPagedList<BlogPost> blogPosts = await (await _blogService.GetAllBlogPostsAsync())
+                                                                     .ToPagedListAsync(page, pageSize);
+            return View(blogPosts);
+        }
+
+        #endregion
+
+        #region Task<IActionResult> AdminArchive(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: BlogPosts/Delete/5
+        public async Task<IActionResult> AdminArchive(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            BlogPost? blogPost = await _blogService.GetBlogByIdAsync(id);
+
+            //var blogPost = await _blogService.GetBlogPostAsync(id);
+
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (blogPost == null)
+            {
+                return NotFound();
+            }
+
+            blogPost.IsArchived = true;
+
+            await _blogService.UpdateBlogPostAsync(blogPost);
+
+            return RedirectToAction(nameof(AuthorArea));
+        }
+
+        #endregion
+
+        #region Task<IActionResult> UnArchive(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Unarchive(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            BlogPost? blogPost = await _blogService.GetBlogByIdAsync(id);
+            if (blogPost != null)
+            {
+                blogPost.IsArchived = false;
+
+                await _blogService.UpdateBlogPostAsync(blogPost);
+            }
+
+            return RedirectToAction(nameof(AuthorArea));
+        }
+
+        #endregion
+
+        #region Task<IActionResult> Publish(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Publish(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            BlogPost? blogPost = await _blogService.GetBlogByIdAsync(id);
+            if (blogPost == null)
+            {
+                return NotFound();
+            }
+
+            blogPost.IsPublished = true;
+            await _blogService.UpdateBlogPostAsync(blogPost);
+            return RedirectToAction(nameof(AuthorArea));
+
+        }
+        #endregion
+
+        #region Task<IActionResult> Unpublish(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Unpublish(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            BlogPost? blogPost = await _blogService.GetBlogByIdAsync(id);
+            if (blogPost == null)
+            {
+                return NotFound();
+            }
+            blogPost.IsPublished = false;
+            await _blogService.UpdateBlogPostAsync(blogPost);
+            return RedirectToAction(nameof(AuthorArea));
+        }
+
+        #endregion
+
+        #endregion
+        //*************************************\\
 
         private async Task<bool> BlogPostExistsAsync(int id)
         {
-          return ((await _blogService.GetAllBlogPostsAsync()).Any(e => e.Id == id));
+          return ((await _blogService.GetBlogPostsAsync()).Any(e => e.Id == id));
         }
     }
 }

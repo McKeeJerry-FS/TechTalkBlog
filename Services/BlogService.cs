@@ -21,7 +21,7 @@ namespace TechTalkBlog.Services
 
 
         #region GetBlogPosts
-        public async Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync()
+        public async Task<IEnumerable<BlogPost>> GetBlogPostsAsync()
         {
 
             try
@@ -52,7 +52,33 @@ namespace TechTalkBlog.Services
 
         }
         #endregion
-        
+
+        #region GetAllBlogPosts
+        public async Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync()
+        {
+
+            try
+            {
+
+                List<BlogPost> blogPosts = new();
+
+                blogPosts = await _context.Posts.Include(b => b.Tags)
+                                                .Include(b => b.Category)
+                                                .Include(b => b.Comments)
+                                                .ToListAsync();
+                return blogPosts;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        #endregion
+
+
         #region GetArchivedBlogPosts
         public async Task<IEnumerable<BlogPost>> GetAllArchivedBlogPostsAsync(int? tagId)
         {
@@ -153,7 +179,7 @@ namespace TechTalkBlog.Services
                    .Include(b => b.Category)
                    .Include(b => b.Comments)
                        .ThenInclude(b => b.Author)
-                   .FirstOrDefaultAsync(m => m.Id == id && m.IsPublished == true && m.IsArchived == false);
+                   .FirstOrDefaultAsync(m => m.Id == id);
 
             return blogPost!;
         }
