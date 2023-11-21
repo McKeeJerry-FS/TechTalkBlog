@@ -14,7 +14,7 @@
             @foreach (Category category in (await _blogService.GetCategoriesAsync()).Take(4))
             {
                 <li class="cat-item">
-                    <a asp-action="Index" asp-controller="BlogPosts" name="categoryId" class="inner">
+                    <a asp-action="Index" asp-controller="BlogPosts" asp-route-id="categoryId" class="inner">
                         <div class="thumbnail">
                             <img src="@_imageService.ConvertByteArrayToFile(category.ImageData, category.ImageType, DefaultImage.CategoryImage)" alt="">
                         </div>
@@ -41,7 +41,7 @@
     </div>
     <!-- End Single Widget  -->
     <!-- Start Single Widget  -->
-    <div class="axil-single-widget widget widget_postlist mb--30">
+    <div class="axil-single-widget widget widget_postlist mb-30">
         <h5 class="widget-title">Popular on Blogar</h5>
         <!-- Start Post List  -->
         <div class="post-medium-block">
@@ -55,7 +55,7 @@
                     </div>
                     <div class="post-content">
                         <h6 class="title">
-                            <a asp-action="Details" asp-controller="BlogPosts" asp-route-id="@blogPost?.Id">
+                            <a asp-action="Details" asp-controller="BlogPosts" asp-route-slug="@blogPost?.Slug">
                                 @blogPost!.Title
                             </a>
                         </h6>

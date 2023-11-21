@@ -10,13 +10,15 @@ namespace TechTalkBlog.Services
     public class BlogService : IBlogService
     {
         private readonly ApplicationDbContext _context;
+        
         public BlogService(ApplicationDbContext context)
         {
             _context = context;
+            
         }
 
-        
-        
+
+
 
         #region GetBlogPosts
         public async Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync()
@@ -151,9 +153,25 @@ namespace TechTalkBlog.Services
                    .Include(b => b.Category)
                    .Include(b => b.Comments)
                        .ThenInclude(b => b.Author)
-                   .FirstOrDefaultAsync(m => m.Id == id);
+                   .FirstOrDefaultAsync(m => m.Id == id && m.IsPublished == true && m.IsArchived == false);
 
             return blogPost!;
+        }
+        #endregion
+
+        #region Task<BlogPost> GetBlogBySlugAsync(string? slug)
+        public async Task<BlogPost> GetBlogBySlugAsync(string? slug)
+        {
+            BlogPost? blogPost = await _context.Posts
+                   .Include(b => b.Category)
+                   .Include(b => b.Comments)
+                       .ThenInclude(b => b.Author)
+                   .FirstOrDefaultAsync(m => m.Slug == slug && m.IsPublished == true && m.IsArchived == false);
+
+            return blogPost!;
+
+
+            
         }
         #endregion
 
@@ -373,7 +391,39 @@ namespace TechTalkBlog.Services
         {
             IEnumerable<Category> categories = await _context.Categories.ToListAsync();
             return categories;
-        } 
+        }
         #endregion
+
+        
+        public async Task<bool> IsValidSlugAsync(string? slug, int? blogPostId)
+        {
+            try
+            {
+                if(blogPostId == null || blogPostId == 0)
+                {
+                    // This indicates that a new blog post is being created
+                    bool isSlug = !await _context.Posts.AnyAsync(b => b.Slug == slug);
+                    return isSlug;
+                }
+                else
+                {
+                    // Editing an existing BlogPost 
+                    BlogPost? blogPost = await _context.Posts.AsNoTracking()
+                                                             .FirstOrDefaultAsync(b => b.Id == blogPostId);
+                    string? oldSlug = blogPost?.Slug;
+                    if(!string.Equals(oldSlug, slug))
+                    {
+                        return !await _context.Posts.AnyAsync(b => b.Id  != blogPost!.Id && b.Slug == slug);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+      
+                throw;
+            }
+        }
     }
 }

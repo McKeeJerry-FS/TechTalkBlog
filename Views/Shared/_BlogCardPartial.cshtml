@@ -5,7 +5,7 @@
 
 <div class="content-block post-list-view mt--30">
     <div class="post-thumbnail">
-        <a asp-action="Details" asp-controller="BlogPosts" asp-route-id="@Model?.Id">
+        <a asp-action="Details" asp-controller="BlogPosts" asp-route-slug="@Model?.Slug">
             <img src="@_ImageService.ConvertByteArrayToFile(Model?.ImageData, Model?.ImageType, DefaultImage.BlogPostImage)" alt="Post Images" class="border border-2 border-secondary">
         </a>
 @*         <a class="video-popup icon-color-secondary size-medium position-top-center" href="post-details.html"><span class="play-icon"></span></a>
@@ -21,7 +21,7 @@
             </div>
         </div>
         <h4 class="title">
-            <a asp-action="Details" asp-controller="BlogPosts" asp-route-id="@Model?.Id">
+            <a asp-action="Details" asp-controller="BlogPosts" asp-route-slug="@Model?.Slug">
                 @Model?.Title
             </a>
         </h4>
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <ul class=" justify-content-end">
-                @foreach (Tag tag in Model?.Tags)
+                @foreach (Tag tag in Model!.Tags)
                 {
 
                     <a href="#" class="badge rounded-pill border border-1 bg-primary text-light fw-normal">@tag.Name</a>

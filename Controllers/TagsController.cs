@@ -12,7 +12,7 @@ using TechTalkBlog.Models;
 
 namespace TechTalkBlog.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, Moderator")]
     public class TagsController : Controller
     {
         private readonly ApplicationDbContext _context;

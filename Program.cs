@@ -22,8 +22,7 @@ builder.Services.AddIdentity<BlogUser, IdentityRole>(options => options.SignIn.R
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+
 
 // Add Custom Services
 builder.Services.AddScoped<IImageService, ImageService>();
@@ -60,6 +59,13 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapControllerRoute(
+        name: "custom",
+        pattern: "content/{slug}",
+        defaults: new { controller = "BlogPosts", 
+                            action = "Details" }
+    );
 
 app.MapControllerRoute(
     name: "default",

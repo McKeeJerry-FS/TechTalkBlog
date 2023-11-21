@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechTalkBlog.Data;
+using TechTalkBlog.Helpers;
 using TechTalkBlog.Models;
 using TechTalkBlog.Services;
 using TechTalkBlog.Services.Interfaces;
@@ -15,29 +16,33 @@ using X.PagedList;
 
 namespace TechTalkBlog.Controllers
 {
-    [Authorize]
+    
     public class BlogPostsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IBlogTagService _blogTagService;
         private readonly IBlogService _blogService;
         private readonly IImageService _imageService;
-        private readonly ILogger<BlogPostsController> _logger;
+        
 
         public BlogPostsController(ApplicationDbContext context,                                   
                                     IBlogTagService blogTagService,
                                     IBlogService blogService,
-                                    IImageService imageService,
-                                    ILogger<BlogPostsController> logger)
+                                    IImageService imageService
+                                    )
         {
             _context = context;
             _blogTagService = blogTagService;
             _blogService = blogService;
             _imageService = imageService;
-            _logger = logger;
+            
         }
 
+        // AdminArea
+
+        #region Task<IActionResult> Index(int? categoryId, int? pageNum)
         // GET: BlogPosts
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int? categoryId, int? pageNum)
         {
 
@@ -51,12 +56,12 @@ namespace TechTalkBlog.Controllers
             if (categoryId == null)
             {
                 // normal operation
-                blogPosts = await(await _blogService.GetAllBlogPostsAsync()).ToPagedListAsync(page, pageSize);
+                blogPosts = await (await _blogService.GetAllBlogPostsAsync()).ToPagedListAsync(page, pageSize);
             }
             else
             {
                 // filtered by category
-                blogPosts = await(await _blogService.FilterBlogPostByCategory(categoryId)).ToPagedListAsync(page, pageSize);
+                blogPosts = await (await _blogService.FilterBlogPostByCategory(categoryId)).ToPagedListAsync(page, pageSize);
             }
 
             // make service call
@@ -65,6 +70,9 @@ namespace TechTalkBlog.Controllers
             return View(blogPosts);
         }
 
+        #endregion
+
+        #region Task<IActionResult> Archived(int? tagId)
         // GET: BlogPosts
         public async Task<IActionResult> Archived(int? tagId)
         {
@@ -80,7 +88,9 @@ namespace TechTalkBlog.Controllers
             return View(blogPosts);
         }
 
+        #endregion
 
+        #region Task<IActionResult> Draft(int? tagId)
         // GET: BlogPosts
         public async Task<IActionResult> Draft(int? tagId)
         {
@@ -96,17 +106,20 @@ namespace TechTalkBlog.Controllers
             return View(blogPosts);
         }
 
+        #endregion
 
+        #region Task<IActionResult> Details(string? slug)
         // GET: BlogPosts/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(string? slug)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(slug))
             {
                 return NotFound();
             }
 
             // New BlogService in Use
-            var blogPost = await _blogService.GetBlogDetailsAsync(id);
+            var blogPost = await _blogService.GetBlogBySlugAsync(slug);
 
             if (blogPost == null)
             {
@@ -116,7 +129,11 @@ namespace TechTalkBlog.Controllers
             return View(blogPost);
         }
 
+        #endregion
+
+        #region Create()
         // GET: BlogPosts/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
 
@@ -126,18 +143,35 @@ namespace TechTalkBlog.Controllers
             return View();
         }
 
+        #endregion
+
+        #region Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,IsPublished,CategoryId,Tags,ImageFile,ImageData,ImageType")] BlogPost blogPost, IEnumerable<int> selected)
         // POST: BlogPosts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,IsPublished,CategoryId,Tags,ImageFile,ImageData,ImageType")] BlogPost blogPost, IEnumerable<int> selected)
         {
             ModelState.Remove("BlogUserId");
-
+            ModelState.Remove("Slug");
 
             if (ModelState.IsValid)
             {
+                string? newSlug = StringHelper.BlogPostSlug(blogPost.Title);
+                if (!await _blogService.IsValidSlugAsync(newSlug, blogPost.Id))
+                {
+                    ModelState.AddModelError("Title", "A similar Title/Slug is already in use. Please choose a different title.");
+
+                    // make a service call
+                    ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
+                    ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
+
+                    return View(blogPost);
+                }
+
+                blogPost.Slug = newSlug;
                 blogPost.CreatedDate = DateTimeOffset.Now.ToUniversalTime();
 
                 if (blogPost.ImageFile != null)
@@ -158,7 +192,7 @@ namespace TechTalkBlog.Controllers
 
                 // new BlogPost Service utilized
                 await _blogService.CreateBlogPostAsync(blogPost, selected!);
-                
+
                 return RedirectToAction(nameof(Index));
             }
             IEnumerable<int> currentTags = blogPost.Tags!.Select(c => c.Id);
@@ -170,7 +204,11 @@ namespace TechTalkBlog.Controllers
             return View(blogPost);
         }
 
+        #endregion
+
+        #region Task<IActionResult> Edit(int? id)
         // GET: BlogPosts/Edit/5
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -193,9 +231,13 @@ namespace TechTalkBlog.Controllers
             return View(blogPost);
         }
 
+        #endregion
+
+        #region Task<IActionResult> Edit(int id, [Bind("Id,Title,BlogUserId,Abstract,Content,CreatedDate,UpdatedDate,Slug,IsArchived,IsPublished,CategoryId,ImageFile,ImageData,ImageType")] BlogPost blogPost, IEnumerable<int> selected)
         // POST: BlogPosts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,BlogUserId,Abstract,Content,CreatedDate,UpdatedDate,Slug,IsArchived,IsPublished,CategoryId,ImageFile,ImageData,ImageType")] BlogPost blogPost, IEnumerable<int> selected)
@@ -205,10 +247,26 @@ namespace TechTalkBlog.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove("Slug");
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    string? newSlug = StringHelper.BlogPostSlug(blogPost.Title);
+                    if (!await _blogService.IsValidSlugAsync(newSlug, blogPost.Id))
+                    {
+                        ModelState.AddModelError("Title", "A similar Title/Slug is already in use. Please choose a different title.");
+
+                        // make a service call
+                        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
+                        ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
+
+                        return View(blogPost);
+                    }
+
+                    blogPost.Slug = newSlug;
+
                     blogPost.UpdatedDate = DateTimeOffset.Now.ToUniversalTime();
                     if (blogPost.ImageFile != null)
                     {
@@ -251,8 +309,12 @@ namespace TechTalkBlog.Controllers
             return View(blogPost);
         }
 
+        #endregion
+
+        #region Task<IActionResult> Archive(int? id)
         // GET: BlogPosts/Archive/5
-        public async Task<IActionResult> Archive(int? id)
+        [Authorize(Roles = "Admin, Moderator")]
+        public async Task<IActionResult> Archive(int? id) 
         {
             if (id == null)
             {
@@ -264,7 +326,7 @@ namespace TechTalkBlog.Controllers
             //    .FirstOrDefaultAsync(m => m.Id == id);
 
             var blogPost = await _blogService.GetBlogDetailsAsync(id);
-            _logger.LogInformation("Blog post successfully archived!");
+            
             if (blogPost == null)
             {
                 return NotFound();
@@ -272,29 +334,35 @@ namespace TechTalkBlog.Controllers
 
             return View(blogPost);
         }
+        #endregion
 
+        #region Task<IActionResult> ArchiveConfirmed(int id)
         // POST: BlogPosts/Delete/5
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveConfirmed(int id)
         {
-            
+
             var blogPost = await _blogService.GetBlogByIdAsync(id);
             if (blogPost != null)
             {
                 //_context.Posts.Remove(blogPost);
                 blogPost.IsArchived = true;
-               await _blogService.UpdateBlogPostAsync(blogPost);
+                await _blogService.UpdateBlogPostAsync(blogPost);
             }
-            
+
             return RedirectToAction(nameof(Index));
         }
 
+        #endregion
 
+        #region Task<IActionResult> SearchIndex(string? searchString, int? pageNum)
         // Search Feature
+        [AllowAnonymous]
         public async Task<IActionResult> SearchIndex(string? searchString, int? pageNum)
         {
-            
+
 
             if (string.IsNullOrWhiteSpace(searchString))
             {
@@ -309,8 +377,12 @@ namespace TechTalkBlog.Controllers
 
         }
 
+        #endregion
+
+        #region Task<IActionResult> Delete(int? id)
         // Delete
         // GET: BlogPosts/Archive/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -332,7 +404,11 @@ namespace TechTalkBlog.Controllers
             return View(blogPost);
         }
 
+        #endregion
+
+        #region Task<IActionResult> DeleteConfirmed(int id)
         // POST: BlogPosts/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -349,6 +425,7 @@ namespace TechTalkBlog.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        #endregion
 
 
         private async Task<bool> BlogPostExistsAsync(int id)

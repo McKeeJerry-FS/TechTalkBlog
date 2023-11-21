@@ -30,5 +30,9 @@ namespace TechTalkBlog.Services.Interfaces
         public Task DeleteBlogPostAsync(int id);
 
         public Task<IEnumerable<BlogPost>> GetAllDraftBlogPostsAsync(int? tagId);
+
+        public Task<bool> IsValidSlugAsync(string? title, int? blogPostId);
+
+        public Task<BlogPost> GetBlogBySlugAsync(string? slug);
     }
 }

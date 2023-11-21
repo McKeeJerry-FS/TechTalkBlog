@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using TechTalkBlog.Models;
 
 namespace TechTalkBlog.Controllers
 {
+    [Authorize(Roles = "Admin, Moderator")]
     public class CommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,6 +26,7 @@ namespace TechTalkBlog.Controllers
         }
 
         // GET: Comments
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Comments.Include(c => c.Author).Include(c => c.BlogPost);
@@ -31,6 +34,7 @@ namespace TechTalkBlog.Controllers
         }
 
         // GET: Comments/Details/5
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Comments == null)
@@ -51,6 +55,7 @@ namespace TechTalkBlog.Controllers
         }
 
         // GET: Comments/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["AuthorId"] = new SelectList(_context.BlogUsers, "Id", "Id");
@@ -61,9 +66,10 @@ namespace TechTalkBlog.Controllers
         // POST: Comments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Body,BlogPostId")] Comment comment)
+        public async Task<IActionResult> Create([Bind("Id,Body,BlogPostId")] Comment comment, string? slug)
         {
             ModelState.Remove("AuthorId");
             
@@ -75,14 +81,14 @@ namespace TechTalkBlog.Controllers
                
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "BlogPosts", new { id = comment.BlogPostId});
             }
             
-            ViewData["BlogPostId"] = new SelectList(_context.Posts, "Id", "Title", comment.BlogPostId);
-            return View(comment);
+            return RedirectToAction("Details", "BlogPosts", new { slug = slug});
+           
         }
 
         // GET: Comments/Edit/5
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Comments == null)
@@ -103,6 +109,7 @@ namespace TechTalkBlog.Controllers
         // POST: Comments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Body,Created,Updated,UpdateReason,BlogPostId,AuthorId")] Comment comment)
@@ -138,6 +145,7 @@ namespace TechTalkBlog.Controllers
         }
 
         // GET: Comments/Delete/5
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Comments == null)
@@ -158,6 +166,7 @@ namespace TechTalkBlog.Controllers
         }
 
         // POST: Comments/Delete/5
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
