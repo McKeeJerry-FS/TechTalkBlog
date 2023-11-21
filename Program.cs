@@ -37,9 +37,13 @@ builder.Services.AddMvc();
 
 var app = builder.Build();
 
+var loggerFactory = app.Services.GetService<ILoggerFactory>();
+loggerFactory.AddFile(builder.Configuration["Logging:LogFilePath"]!.ToString());
+
 var scope = app.Services.CreateScope();
 
 await DataUtility.ManageDataAsync(scope.ServiceProvider);
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

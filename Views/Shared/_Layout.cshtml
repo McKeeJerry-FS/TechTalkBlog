@@ -1,4 +1,11 @@
-﻿@inject IImageService _ImageService
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject IImageService _ImageService
+@inject UserManager<BlogUser> _userManager
+@{
+    BlogUser? blogUser = await _userManager.GetUserAsync(User);
+}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -200,7 +207,7 @@
                                             <img src="@_ImageService.ConvertByteArrayToFile(null, null, DefaultImage.AuthorImage)" alt="User Image">
                                             <span class="status online"></span>
                                         </span>
-                                        <span>@User.Identity!.Name</span>
+                                        <span>@blogUser?.FullName</span>
                                     </a>
                                     @if (User.Identity!.IsAuthenticated)
                                     {
