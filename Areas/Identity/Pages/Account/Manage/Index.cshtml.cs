@@ -4,12 +4,14 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TechTalkBlog.Models;
+using TechTalkBlog.Services.Interfaces;
 
 namespace TechTalkBlog.Areas.Identity.Pages.Account.Manage
 {
@@ -17,13 +19,16 @@ namespace TechTalkBlog.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<BlogUser> _userManager;
         private readonly SignInManager<BlogUser> _signInManager;
+        private readonly IImageService _imageService;
 
         public IndexModel(
             UserManager<BlogUser> userManager,
-            SignInManager<BlogUser> signInManager)
+            SignInManager<BlogUser> signInManager,
+            IImageService imageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _imageService = imageService;
         }
 
         /// <summary>
@@ -52,6 +57,20 @@ namespace TechTalkBlog.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
+            [StringLength(40, ErrorMessage = "The {0} must be at least {2} and at most {0} characters", MinimumLength = 2)]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [StringLength(40, ErrorMessage = "The {0} must be at least {2} and at most {0} characters", MinimumLength = 2)]
+            [Display(Name = "First Name")]
+            public string LastName { get; set; }
+
+            // ImageStorage Properties
+            public byte[] ImageData { get; set; }
+            public string ImageType { get; set; }
+
+            [NotMapped]
+            public IFormFile ImageFile { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -70,6 +89,9 @@ namespace TechTalkBlog.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ImageData = user.ImageFileData,
                 PhoneNumber = phoneNumber
             };
         }
@@ -99,6 +121,19 @@ namespace TechTalkBlog.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
+
+            // User Image Function
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
+
+            if (Input.ImageFile != null)
+            {
+                user.ImageFileData = await _imageService.ConvertFileToByteArrayAsynC(Input.ImageFile);
+                user.ImageFileType = Input.ImageFile.ContentType;
+            }
+
+            await _userManager.UpdateAsync(user);
+            // end User Image Function
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)

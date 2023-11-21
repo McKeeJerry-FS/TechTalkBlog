@@ -1,4 +1,4 @@
-﻿
+﻿@inject IImageService _ImageService
 
 <!DOCTYPE html>
 <html lang="en">
@@ -197,7 +197,7 @@
                                 <li class="nav-item dropdown has-arrow main-drop">
                                     <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="user-img">
-                                            <img src="" alt="">
+                                            <img src="@_ImageService.ConvertByteArrayToFile(null, null, DefaultImage.AuthorImage)" alt="User Image">
                                             <span class="status online"></span>
                                         </span>
                                         <span>@User.Identity!.Name</span>
