@@ -10,10 +10,13 @@ namespace TechTalkBlog.Services
     public class BlogService : IBlogService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<BlogService> _logger;
         
-        public BlogService(ApplicationDbContext context)
+        public BlogService(ApplicationDbContext context,
+                            ILogger<BlogService> logger)
         {
             _context = context;
+            _logger = logger;
             
         }
 
@@ -32,6 +35,7 @@ namespace TechTalkBlog.Services
                 blogPosts = await _context.Posts.Include(b => b.Tags)
                                                 .Include(b => b.Category)
                                                 .Include(b => b.Comments)
+                                                .Include(b => b.Likes)
                                                 .ToListAsync();
                 List<BlogPost> selectedBlogPosts = new();
                 foreach (var blogPost in blogPosts)
@@ -65,6 +69,7 @@ namespace TechTalkBlog.Services
                 blogPosts = await _context.Posts.Include(b => b.Tags)
                                                 .Include(b => b.Category)
                                                 .Include(b => b.Comments)
+                                                .Include(b => b.Likes)
                                                 .ToListAsync();
                 return blogPosts;
 
@@ -77,7 +82,6 @@ namespace TechTalkBlog.Services
 
         }
         #endregion
-
 
         #region GetArchivedBlogPosts
         public async Task<IEnumerable<BlogPost>> GetAllArchivedBlogPostsAsync(int? tagId)
@@ -157,6 +161,7 @@ namespace TechTalkBlog.Services
                     .Include(b => b.Comments)
                         .ThenInclude(b => b.Author)
                     .Include(b => b.Tags)
+                    .Include(b => b.Likes)
                     .FirstOrDefaultAsync(m => m.Id == id);
 
 
@@ -170,6 +175,39 @@ namespace TechTalkBlog.Services
             }
 
         }
+        #endregion
+
+        #region Task<IEnumerable<BlogPost>> GetFavoriteBlogPostsAsync(string? blogUserId)
+        public async Task<IEnumerable<BlogPost>> GetFavoriteBlogPostsAsync(string? blogUserId)
+        {
+            try
+            {
+                List<BlogPost> blogPosts = new();
+                if (!string.IsNullOrEmpty(blogUserId))
+                {
+                    BlogUser? blogUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == blogUserId);
+                    if (blogUser != null)
+                    {
+                        //List<int> blogPostIds = _context.BlogLikes.Where(bl => bl.BlogUserId == blogUserId && bl.IsLiked == true).Select(b => b.BlogPostId).ToList();
+                        blogPosts = await _context.Posts.Where(b => b.Likes.Any(l => l.BlogUserId == blogUserId && l.IsLiked == true) &&
+                                                                                    b.IsPublished == true &&
+                                                                                    b.IsArchived == false)
+                                                            .Include(b => b.Likes)
+                                                            .Include(b => b.Comments)
+                                                            .Include(b => b.Category)
+                                                            .Include(b => b.Tags)
+                                                            .OrderByDescending(b => b.CreatedDate)
+                                                            .ToListAsync();
+                    }
+                }
+                return blogPosts;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        } 
         #endregion
 
         #region Task<BlogPost> GetBlogByIdAsync(int? id)
@@ -420,12 +458,12 @@ namespace TechTalkBlog.Services
         }
         #endregion
 
-        
+        #region Task<bool> IsValidSlugAsync(string? slug, int? blogPostId)
         public async Task<bool> IsValidSlugAsync(string? slug, int? blogPostId)
         {
             try
             {
-                if(blogPostId == null || blogPostId == 0)
+                if (blogPostId == null || blogPostId == 0)
                 {
                     // This indicates that a new blog post is being created
                     bool isSlug = !await _context.Posts.AnyAsync(b => b.Slug == slug);
@@ -437,9 +475,9 @@ namespace TechTalkBlog.Services
                     BlogPost? blogPost = await _context.Posts.AsNoTracking()
                                                              .FirstOrDefaultAsync(b => b.Id == blogPostId);
                     string? oldSlug = blogPost?.Slug;
-                    if(!string.Equals(oldSlug, slug))
+                    if (!string.Equals(oldSlug, slug))
                     {
-                        return !await _context.Posts.AnyAsync(b => b.Id  != blogPost!.Id && b.Slug == slug);
+                        return !await _context.Posts.AnyAsync(b => b.Id != blogPost!.Id && b.Slug == slug);
                     }
                 }
 
@@ -447,9 +485,27 @@ namespace TechTalkBlog.Services
             }
             catch (Exception ex)
             {
-      
+
+                throw;
+            }
+        } 
+        #endregion
+
+        #region Task<bool> UserLikedBlogAsync(int blogPostId, string blogUserId)
+        public async Task<bool> UserLikedBlogAsync(int blogPostId, string blogUserId)
+        {
+            try
+            {
+                return await _context.BlogLikes.AnyAsync(bl => bl.BlogPostId == blogPostId
+                                                            && bl.IsLiked == true
+                                                            && bl.BlogUserId == blogUserId);
+            }
+            catch (Exception)
+            {
+                _logger.LogInformation("Error: No BlogLikes found");
                 throw;
             }
         }
+        #endregion    
     }
 }

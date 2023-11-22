@@ -36,5 +36,10 @@ namespace TechTalkBlog.Services.Interfaces
         public Task<bool> IsValidSlugAsync(string? title, int? blogPostId);
 
         public Task<BlogPost> GetBlogBySlugAsync(string? slug);
+       
+        public Task<IEnumerable<BlogPost>> GetFavoriteBlogPostsAsync(string? blogUserId);
+
+        public Task<bool> UserLikedBlogAsync(int blogPostId, string blogUserId);
+
     }
 }

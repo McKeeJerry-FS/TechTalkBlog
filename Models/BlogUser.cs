@@ -44,5 +44,6 @@ namespace TechTalkBlog.Models
 
         // Navigation Properties
         public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
+        public virtual ICollection<BlogLike> Likes { get; set; } = new HashSet<BlogLike>();
     }
 }

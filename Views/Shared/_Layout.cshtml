@@ -1,6 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
-
-@inject IImageService _ImageService
+﻿@inject IImageService _ImageService
 @inject UserManager<BlogUser> _userManager
 @{
     BlogUser? blogUser = await _userManager.GetUserAsync(User);
@@ -106,6 +104,16 @@
                                             </li>*@
                                         </ul>
                                     </li>
+                                    @if(User.Identity!.IsAuthenticated)
+                                    {
+                                        <li>
+                                            <a class="hover-flip-item-wrapper" asp-action="Favorites" asp-controller="BlogPosts">
+                                                <span class="">
+                                                    <span> Favorite Posts</span>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    }
                                     <li><a asp-action="ContactMe" asp-controller="BlogPosts">Contact Me</a></li>
                                     @if (User.IsInRole("Admin"))
                                     {

@@ -177,6 +177,24 @@ namespace TechTalkBlog.Controllers
 
         #endregion
 
+        #region Task<IActionResult> Popular(int? pageNum)
+        [Authorize]
+        public async Task<IActionResult> Favorites(int? pageNum)
+        {
+            int pageSize = 4;
+            int page = pageNum ?? 1;
+
+            IPagedList<BlogPost> favoriteBlogs;
+            favoriteBlogs = await (await _blogService.GetPopularBlogsAsync()).ToPagedListAsync(page, pageSize);
+
+            // make service call
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
+            return View(favoriteBlogs);
+        }
+
+        #endregion
+
         #region Task<IActionResult> Details(string? slug)
         // GET: BlogPosts/Details/5
         [AllowAnonymous]
@@ -493,6 +511,32 @@ namespace TechTalkBlog.Controllers
 
         #endregion
 
+        public async Task<IActionResult> LikeBlogPost(int? blogPostId, string? blogUserId)
+        {
+            BlogUser? blogUser = await _context.Users.Include(u => u.Likes).FirstOrDefaultAsync(u => u.Id == blogUserId);
+            bool result = false;
+            BlogLike? blogLike = new();
+
+            if (blogUser != null && blogPostId != null)
+            {
+                if (!blogUser.Likes.Any(bl => bl.BlogPostId == blogPostId))
+                {
+                    result = true;
+                }
+                else
+                {
+
+                }
+                result = blogLike.IsLiked;
+                await _context.SaveChangesAsync();
+            }
+            return Json(new
+            {
+                isLiked = result,
+                count = _context.BlogLikes.Where(bl => bl.BlogPostId == blogPostId && bl.IsLiked == true).Count()
+
+            });
+        }
         //*************************************\\
         #region Admin Only Functions
 
@@ -613,3 +657,4 @@ namespace TechTalkBlog.Controllers
         }
     }
 }
+
