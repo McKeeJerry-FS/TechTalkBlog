@@ -516,16 +516,26 @@ namespace TechTalkBlog.Controllers
             BlogUser? blogUser = await _context.Users.Include(u => u.Likes).FirstOrDefaultAsync(u => u.Id == blogUserId);
             bool result = false;
             BlogLike? blogLike = new();
+            // list is already created
+            // List<BlogLike> likes = new();
 
             if (blogUser != null && blogPostId != null)
             {
                 if (!blogUser.Likes.Any(bl => bl.BlogPostId == blogPostId))
                 {
-                    result = true;
+                    //result = true;
+                    blogLike.IsLiked = true;
+                    blogLike.BlogPostId = blogPostId.Value;
+                    
+                    // adding the like to the user's list of likes
+                    blogUser.Likes.Add(blogLike);
+                    //likes.Add(blogLike);
                 }
                 else
                 {
-
+                    //result = false;
+                    blogLike = await _context.BlogLikes.FirstOrDefaultAsync(bl => bl.BlogPostId == blogPostId &&  bl.BlogUserId == blogUserId);
+                    blogLike.IsLiked = !blogLike.IsLiked;
                 }
                 result = blogLike.IsLiked;
                 await _context.SaveChangesAsync();

@@ -259,46 +259,50 @@
         string userId = _UserManager.GetUserId(User)!;
     }
     let userId = '@userId';
-    $().ready(function (){
-        // If not logged in, use sweetAlert
-        if (userId == '') {
-            Swal.fire({
-                backdrop: false,
-                icon: 'warning',
-                title: 'Oops',
-                text: 'You must be logged in to Like this post'
+        $().ready(function () {
+            $('#likesButton').click(function () {
+
+
+                // If not logged in, use sweetAlert
+                if (userId == '') {
+                    Swal.fire({
+                        backdrop: false,
+                        icon: 'warning',
+                        title: 'Oops',
+                        text: 'You must be logged in to Like this post'
+                    });
+                } else {
+
+                    let args = {
+                        blogPostId: @Model!.Id,
+                        blogUserId: userId
+                    };
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("LikeBlogPost", "BlogPosts")',
+                        data: args,
+                        success: function (result) {
+                            let data = result.isLiked;
+                            let likes = result.count;
+                            if (data == true) {
+                                $("#faThumb").css({ "background-color": "#ff993b", "color": "white", "border-color": "white" });
+                            }
+                            else {
+                                $("#faThumb").css({ "background-color": "", "color": "", "border-color": "" });
+                            }
+                            $('#numLikes').html(likes + ' Likes');
+
+                        },
+                        failure: function (result) {
+                            alert(result.d);
+                        },
+                        error: function (result) {
+                            alert(result.d)
+                        }
+
+                    })
+                }
             });
-        } else {
-
-            let args = {
-                blogPostId = @Model!.Id,
-                blogUserId = userId
-            };
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("LikeBlogPost", "BlogPost")',
-                data: args,
-                success: function (result) {
-                    let data = result.isLiked;
-                    let likes = result.count;
-                    if (data == true) {
-                        $("#faThumb").css({ "background-color":"#ff993b";"color":"white";"border-color":"white"});
-                    }
-                    else {
-                            $("#faThumb").css({ "background-color":"";"color":"";"border-color":""});
-                    }
-                    $('#numLikes').html(likes + ' Likes');
-
-                }
-                failure: function (result) {
-                    alert(result.d);
-                },
-                error: function (result) {
-                    alert(result.d)
-                }
-
-            })
-        }
-    })
+        });
     </script>
 }

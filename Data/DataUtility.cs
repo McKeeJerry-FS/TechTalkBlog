@@ -77,7 +77,7 @@ namespace TechTalkBlog.Data
 
             try
             {
-                BlogUser? adminUser = new BlogUser()
+                BlogUser? adminUser = new()
                 {
                     UserName = adminEmail,
                     Email = adminEmail,
@@ -97,7 +97,7 @@ namespace TechTalkBlog.Data
                 }
 
 
-                BlogUser? moderatorUser = new BlogUser()
+                BlogUser? moderatorUser = new()
                 {
                     UserName = moderatorEmail,
                     Email = moderatorEmail,

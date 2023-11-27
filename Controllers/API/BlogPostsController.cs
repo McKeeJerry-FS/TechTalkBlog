@@ -55,69 +55,69 @@ namespace TechTalkBlog.Controllers.API
 
         // PUT: api/BlogPosts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBlogPost(int id, BlogPost blogPost)
-        {
-            if (id != blogPost.Id)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutBlogPost(int id, BlogPost blogPost)
+        //{
+        //    if (id != blogPost.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(blogPost).State = EntityState.Modified;
+        //    _context.Entry(blogPost).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BlogPostExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!BlogPostExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         // POST: api/BlogPosts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<BlogPost>> PostBlogPost(BlogPost blogPost)
-        {
-          if (_context.Posts == null)
-          {
-              return Problem("Entity set 'ApplicationDbContext.Posts'  is null.");
-          }
-            _context.Posts.Add(blogPost);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //public async Task<ActionResult<BlogPost>> PostBlogPost(BlogPost blogPost)
+        //{
+        //  if (_context.Posts == null)
+        //  {
+        //      return Problem("Entity set 'ApplicationDbContext.Posts'  is null.");
+        //  }
+        //    _context.Posts.Add(blogPost);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBlogPost", new { id = blogPost.Id }, blogPost);
-        }
+        //    return CreatedAtAction("GetBlogPost", new { id = blogPost.Id }, blogPost);
+        //}
 
         // DELETE: api/BlogPosts/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBlogPost(int id)
-        {
-            if (_context.Posts == null)
-            {
-                return NotFound();
-            }
-            var blogPost = await _context.Posts.FindAsync(id);
-            if (blogPost == null)
-            {
-                return NotFound();
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteBlogPost(int id)
+        //{
+        //    if (_context.Posts == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var blogPost = await _context.Posts.FindAsync(id);
+        //    if (blogPost == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Posts.Remove(blogPost);
-            await _context.SaveChangesAsync();
+        //    _context.Posts.Remove(blogPost);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         //GET:api/PortfolioBlogs
         [HttpGet]
