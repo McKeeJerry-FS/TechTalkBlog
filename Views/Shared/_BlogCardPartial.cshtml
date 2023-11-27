@@ -38,6 +38,7 @@
                     <ul class="post-meta-list">
                         <li>@Model?.CreatedDate.ToString("MMM dd, yyyy")</li>
                         <li>@Model?.Comments?.Count()</li>
+                        <li><span id="numLikes">@Model!.Likes.Where(l => l.IsLiked == true).Count() Likes</span></li>
                     </ul>
                 </div>
             </div>
