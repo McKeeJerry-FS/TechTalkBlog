@@ -36,12 +36,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Comments)
             </th>
-            @* <th>
-            @Html.DisplayNameFor(model => model.ImageData)
-            </th>
-            <th>
-            @Html.DisplayNameFor(model => model.ImageType)
-            </th> *@
+           
             <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
@@ -79,14 +74,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Comments.Count)
                 </td>
-                @*  <td>
-            @Html.DisplayFor(modelItem => item.ImageData)
-            </td>
-            <td>
-            @Html.DisplayFor(modelItem => item.ImageType)
-            </td> *@
+               
                 <td>
-                    @Html.DisplayFor(modelItem => item.Category.Name)
+                    @Html.DisplayFor(modelItem => item.Category!.Name)
                 </td>
                 <td>
                     @foreach (Tag tag in item.Tags)
