@@ -12,8 +12,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger" method="post"></div>
+        <form asp-action="Create" asp-controller="Categories" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -25,8 +25,8 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageFile" class="control-label">Blog Post Image</label>
-                <img class="img-fluid border rounded-3 mb-2 border border-1 border-secondary" style="max-height: 350px;" src="@_ImageService.ConvertByteArrayToFile(Model?.ImageData, Model?.ImageType, DefaultImage.BlogPostImage)" id="blogImage">
+                <label asp-for="ImageFile" class="control-label">Category Image</label>
+                <img class="img-fluid border rounded-3 mb-2 border border-1 border-secondary" style="max-height: 350px;" src="@_ImageService.ConvertByteArrayToFile(Model?.ImageData, Model?.ImageType, DefaultImage.CategoryImage)" id="categoryImage">
                 <input asp-for="ImageFile" type="file" class="form-control mt-3 pt-2 border border-1 border-secondary" accept=".png,.jpg,.jpeg,.gif"
                        onchange="document.getElementById('blogImage').src = window.URL.createObjectURL(this.files[0])" />
             </div>
