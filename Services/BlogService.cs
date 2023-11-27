@@ -36,6 +36,7 @@ namespace TechTalkBlog.Services
                                                 .Include(b => b.Category)
                                                 .Include(b => b.Comments)
                                                 .Include(b => b.Likes)
+                                                .OrderByDescending(b => b.CreatedDate)
                                                 .ToListAsync();
                 List<BlogPost> selectedBlogPosts = new();
                 foreach (var blogPost in blogPosts)
@@ -70,6 +71,7 @@ namespace TechTalkBlog.Services
                                                 .Include(b => b.Category)
                                                 .Include(b => b.Comments)
                                                 .Include(b => b.Likes)
+                                                .OrderByDescending(b => b.CreatedDate)
                                                 .ToListAsync();
                 return blogPosts;
 
@@ -95,6 +97,7 @@ namespace TechTalkBlog.Services
                 blogPosts = await _context.Posts.Include(b => b.Tags)
                                                 .Include(b => b.Category)
                                                 .Include(b => b.Comments)
+                                                .OrderByDescending (b => b.CreatedDate)
                                                 .ToListAsync();
                 List<BlogPost> selectedBlogPosts = new();
                 foreach (var blogPost in blogPosts)
