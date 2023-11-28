@@ -130,7 +130,9 @@ namespace TechTalkBlog.Controllers.API
                 return NotFound();
             }
 
-            IEnumerable<BlogPost>? result = await _context.Posts.Take(count.Value).ToListAsync();
+            IEnumerable<BlogPost>? result = await _context.Posts.Take(count.Value)
+                                                                .OrderByDescending(b => b.CreatedDate)
+                                                                .ToListAsync();
 
             if(result.Any())
             {
