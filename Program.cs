@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Serilog;
 using TechTalkBlog.Data;
 using TechTalkBlog.Models;
 using TechTalkBlog.Services;

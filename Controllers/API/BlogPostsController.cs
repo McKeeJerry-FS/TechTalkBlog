@@ -131,6 +131,7 @@ namespace TechTalkBlog.Controllers.API
             }
 
             IEnumerable<BlogPost>? result = await _context.Posts.Take(count.Value)
+                                                                .OrderByDescending(b => b.Id)
                                                                 .OrderByDescending(b => b.CreatedDate)
                                                                 .ToListAsync();
 
