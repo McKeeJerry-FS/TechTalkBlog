@@ -117,7 +117,7 @@ namespace TechTalkBlog.Controllers
 
             // make service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
+            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name");
             return View(blogPosts);
         }
 
@@ -253,7 +253,7 @@ namespace TechTalkBlog.Controllers
 
                     // make a service call
                     ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-                    ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
+                    ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", blogPost.Tags);
 
                     return View(blogPost);
                 }
@@ -286,7 +286,7 @@ namespace TechTalkBlog.Controllers
 
             // make a service call
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
+            ViewData["Tags"] = new SelectList(_context.Tags, "Id", "Name", blogPost.Tags);
 
             return View(blogPost);
         }
@@ -510,6 +510,8 @@ namespace TechTalkBlog.Controllers
         }
 
         #endregion
+        
+        #region Task<IActionResult> LikeBlogPost(int? blogPostId, string? blogUserId)
 
         public async Task<IActionResult> LikeBlogPost(int? blogPostId, string? blogUserId)
         {
@@ -526,7 +528,7 @@ namespace TechTalkBlog.Controllers
                     //result = true;
                     blogLike.IsLiked = true;
                     blogLike.BlogPostId = blogPostId.Value;
-                    
+
                     // adding the like to the user's list of likes
                     blogUser.Likes.Add(blogLike);
                     //likes.Add(blogLike);
@@ -534,7 +536,7 @@ namespace TechTalkBlog.Controllers
                 else
                 {
                     //result = false;
-                    blogLike = await _context.BlogLikes.FirstOrDefaultAsync(bl => bl.BlogPostId == blogPostId &&  bl.BlogUserId == blogUserId);
+                    blogLike = await _context.BlogLikes.FirstOrDefaultAsync(bl => bl.BlogPostId == blogPostId && bl.BlogUserId == blogUserId);
                     blogLike.IsLiked = !blogLike.IsLiked;
                 }
                 result = blogLike.IsLiked;
@@ -546,7 +548,9 @@ namespace TechTalkBlog.Controllers
                 count = _context.BlogLikes.Where(bl => bl.BlogPostId == blogPostId && bl.IsLiked == true).Count()
 
             });
-        }
+        } 
+        #endregion
+        
         //*************************************\\
         #region Admin Only Functions
 
