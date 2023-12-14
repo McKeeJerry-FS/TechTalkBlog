@@ -267,6 +267,74 @@
                         <a asp-action="Index" asp-controller="Home">Home</a>
                     </li>
                     <li class="menu-item-has-children">
+                        <a href="#">Author</a>
+                        <ul class="axil-submenu">
+                            <li>
+                                <a class="hover-flip-item-wrapper" asp-controller="BlogPosts" asp-action="AuthorArea">
+                                    <span class="">
+                                        <span>Author Area</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="hover-flip-item-wrapper" asp-controller="BlogPosts" asp-action="Index">
+                                    <span class="">
+                                        <span>Admin</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="hover-flip-item-wrapper" href="~/swagger">
+                                    <span class="">
+                                        <span>APIs</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="hover-flip-item-wrapper" asp-controller="BlogPosts" asp-action="Create">
+                                    <span class="">
+                                        <span>Add New Post</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="hover-flip-item-wrapper" asp-controller="BlogPosts" asp-action="Index">
+                                    <span class="hover-flip-item">
+                                        <span data-text="Manage Posts">Manage Posts</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="hover-flip-item-wrapper" asp-controller="Categories" asp-action="Index">
+                                    <span class="hover-flip-item">
+                                        <span data-text="Manage Categories">Manage Categories</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="hover-flip-item-wrapper" asp-controller="Tags" asp-action="Index">
+                                    <span class="hover-flip-item">
+                                        <span data-text="Manage Tags">Manage Tags</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="hover-flip-item-wrapper" asp-action="Draft" asp-controller="BlogPosts">
+                                    <span class="hover-flip-item">
+                                        <span data-text="Draft Posts">Draft Posts</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="hover-flip-item-wrapper" asp-action="Archived" asp-controller="BlogPosts">
+                                    <span class="hover-flip-item">
+                                        <span data-text="Archieved">Archived Posts</span>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children">
                         <a href="#">Categories</a>
                         <ul class="axil-submenu">
                         </ul>
