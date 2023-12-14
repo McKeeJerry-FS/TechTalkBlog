@@ -181,16 +181,23 @@ namespace TechTalkBlog.Controllers
         [Authorize]
         public async Task<IActionResult> Favorites(int? pageNum)
         {
+            BlogUser? user = await _userManager.GetUserAsync(User);
             int pageSize = 4;
             int page = pageNum ?? 1;
 
             IPagedList<BlogPost> favoriteBlogs;
-            favoriteBlogs = await (await _blogService.GetPopularBlogsAsync()).ToPagedListAsync(page, pageSize);
+            if (user != null)
+            {
+                favoriteBlogs = await (await _blogService.GetFavoriteBlogPostsAsync(user!.Id)).ToPagedListAsync(page, pageSize);
 
-            // make service call
+                // make service call
+                ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+                ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
+                return View(favoriteBlogs);
+            }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["Tags"] = new MultiSelectList(_context.Tags, "Id", "Name");
-            return View(favoriteBlogs);
+            return View();
         }
 
         #endregion
