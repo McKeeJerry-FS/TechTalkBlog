@@ -264,9 +264,11 @@
                 </div>
                 <ul class="mainmenu">
                     <li class="">
-                        <a asp-action="Index" asp-controller="Home">Home</a>
+                        <a asp-controller="BlogPosts" asp-action="Index">Home</a>
                     </li>
-                    <li class="menu-item-has-children">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="menu-item-has-children">
                         <a href="#">Author</a>
                         <ul class="axil-submenu">
                             <li>
@@ -333,22 +335,26 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li>                     
+                    }
                     <li class="menu-item-has-children">
-                        <a href="#">Categories</a>
+                        <a asp-action="Index" asp-controller="BlogPosts">Categories</a>
                         <ul class="axil-submenu">
                         </ul>
                     </li>
                     <li class="menu-item-has-children">
-                        <a href="#">Popular Posts</a>
+                        <a asp-action="Popular" asp-controller="BlogPosts">Popular Posts</a>
                         <ul class="axil-submenu">
                         </ul>
                     </li>
-                    <li class="menu-item-has-children">
-                        <a href="#">Favorites</a>
-                        <ul class="axil-submenu">
-                        </ul>
-                    </li>
+                    @if (User.Identity!.IsAuthenticated)
+                    {                      
+                        <li class="menu-item-has-children">
+                            <a asp-action="Favorites" asp-controller="BlogPosts">Favorites</a>
+                            <ul class="axil-submenu">
+                            </ul>
+                        </li>
+                    }
                     <li><a href="404.html">404 Page</a></li>
                     <li><a href="contact.html">Contact me</a></li>
                 </ul>

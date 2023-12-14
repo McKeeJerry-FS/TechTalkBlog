@@ -177,7 +177,7 @@ namespace TechTalkBlog.Controllers
 
         #endregion
 
-        #region Task<IActionResult> Popular(int? pageNum)
+        #region Task<IActionResult> Favorites(int? pageNum)
         [Authorize]
         public async Task<IActionResult> Favorites(int? pageNum)
         {
