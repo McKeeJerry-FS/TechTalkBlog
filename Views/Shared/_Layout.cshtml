@@ -345,6 +345,10 @@
                     <li class="menu-item-has-children">
                         <a asp-action="Popular" asp-controller="BlogPosts">Popular Posts</a>
                         <ul class="axil-submenu">
+                            <li>
+                                <a asp-action="Popular" asp-controller="BlogPosts">Popular Posts</a>
+                                <i class="fal fa-thumbs-up">Popular Posts</i>
+                            </li>
                         </ul>
                     </li>
                     @if (User.Identity!.IsAuthenticated)
@@ -352,6 +356,10 @@
                         <li class="menu-item-has-children">
                             <a asp-action="Favorites" asp-controller="BlogPosts">Favorites</a>
                             <ul class="axil-submenu">
+                                <li>
+                                    <a asp-action="Favorites" asp-controller="BlogPosts">Favorites</a>
+                                    <i class="fal fa-thumbs-up">Favorites</i>
+                                </li>
                             </ul>
                         </li>
                     }
