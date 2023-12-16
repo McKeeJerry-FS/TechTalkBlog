@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -130,8 +130,8 @@ namespace TechTalkBlog.Controllers.API
                 return NotFound();
             }
 
-            IEnumerable<BlogPost>? result = await _context.Posts.Take(count.Value)                                                              
-                                                                .OrderByDescending(b => b.CreatedDate)
+            IEnumerable<BlogPost>? result = await _context.Posts.OrderByDescending(b => b.CreatedDate).Take(count.Value)                                                              
+                        
                                                                 .ToListAsync();
 
             if(result.Any())
