@@ -92,14 +92,12 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <!--CK Editor-->
-    <script src="https://cdn.ckeditor.com/ckeditor5/37.1.0/classic/ckeditor.js"></script>
+    <script src="~/vendor/ckeditor5-40-2/build/ckeditor.js"></script>
     <script>
         ClassicEditor
-            .create(document.querySelector('.editor'), {
-                licenseKey: '',
-            })
-            .then(editor => {
-                window.editor = editor;
+            .create(document.querySelector('.editor'))
+            .catch(error => {
+                console.error(error);
             });
     </script>
 }
