@@ -148,7 +148,7 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="hover-flip-item-wrapper" asp-controller="BlogPosts" asp-action="Index">
+                                                    <a class="hover-flip-item-wrapper" asp-controller="BlogPosts" asp-action="AuthorArea">
                                                         <span class="hover-flip-item">
                                                             <span data-text="Manage Posts">Manage Posts</span>
                                                         </span>
@@ -210,11 +210,21 @@
                             <ul class="metabar-block">
                                 <li class="nav-item dropdown has-arrow main-drop">
                                     <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="user-img">
-                                            <img src="@_ImageService.ConvertByteArrayToFile(null, null, DefaultImage.AuthorImage)" alt="User Image">
-                                            <span class="status online"></span>
-                                        </span>
-                                        <span>@blogUser?.FullName</span>
+                                        @if (User.Identity!.IsAuthenticated)
+                                        {
+                                            <span class="user-img">
+                                                <img src="@_ImageService.ConvertByteArrayToFile(null, null, DefaultImage.AuthorImage)" alt="User Image">
+                                                <span class="status online"></span>
+                                            </span>
+                                            <span>@blogUser?.FullName</span>
+                                        } else
+                                        {
+                                            <span class="user-img">
+                                                <img src="@_ImageService.ConvertByteArrayToFile(null, null, DefaultImage.BlogUserImage)" alt="User Image">
+                                                <span class="status online"></span>
+                                            </span>
+                                            <span>@blogUser?.FullName</span>
+                                        }
                                     </a>
                                     @if (User.Identity!.IsAuthenticated)
                                     {
@@ -250,9 +260,8 @@
             <div class="inner">
                 <div class="mobile-menu-top">
                     <div class="logo">
-                        <a href="index.html">
-                            <img class="dark-logo" src="~/assets/images/logo/logo-black.png" alt="Logo Images">
-                            <img class="light-logo" src="~/assets/images/logo/logo-white2.png" alt="Logo Images">
+                        <a asp-controller="BlogPosts" asp-action="Index">
+                            <p class="fs-2">The Tech Pulse</p>
                         </a>
                     </div>
                     <div class="mobile-close">
