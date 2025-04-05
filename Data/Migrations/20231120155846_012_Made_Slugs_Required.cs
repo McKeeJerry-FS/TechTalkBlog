@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace GrowBlog.Data.Migrations
+namespace TechTalkBlog.Data.Migrations
 {
     /// <inheritdoc />
     public partial class _012_Made_Slugs_Required : Migration

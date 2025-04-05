@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using GrowBlog.Data;
-using GrowBlog.Models;
-using GrowBlog.Services.Interfaces;
+using TechTalkBlog.Data;
+using TechTalkBlog.Models;
+using TechTalkBlog.Services.Interfaces;
 
-namespace GrowBlog.Services
+namespace TechTalkBlog.Services
 {
     public class BlogTagService : IBlogTagService
     {

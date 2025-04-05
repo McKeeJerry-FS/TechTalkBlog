@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Identity;
+ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Serilog;
-using GrowBlog.Data;
-using GrowBlog.Models;
-using GrowBlog.Services;
-using GrowBlog.Services.Interfaces;
+using TechTalkBlog.Data;
+using TechTalkBlog.Models;
+using TechTalkBlog.Services;
+using TechTalkBlog.Services.Interfaces;
 
 
 

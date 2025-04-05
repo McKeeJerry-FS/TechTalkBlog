@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace GrowBlog.Models
+namespace TechTalkBlog.Models
 {
     public class BlogUser : IdentityUser
     {

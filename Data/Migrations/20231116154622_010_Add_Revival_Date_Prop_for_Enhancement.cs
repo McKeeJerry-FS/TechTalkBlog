@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace GrowBlog.Data.Migrations
+namespace TechTalkBlog.Data.Migrations
 {
     /// <inheritdoc />
     public partial class _010_Add_Revival_Date_Prop_for_Enhancement : Migration

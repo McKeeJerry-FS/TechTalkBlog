@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace GrowBlog.Data.Migrations
+namespace TechTalkBlog.Data.Migrations
 {
     /// <inheritdoc />
     public partial class _011_Changed_IsDeleted_to_IsArchived : Migration

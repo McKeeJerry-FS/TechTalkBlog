@@ -1,4 +1,4 @@
-﻿@model IPagedList<GrowBlog.Models.BlogPost>
+﻿@model IPagedList<TechTalkBlog.Models.BlogPost>
 @inject IImageService _imageService
 
 @{
@@ -19,7 +19,7 @@
                 <div class="page-title">
                     @if (string.IsNullOrEmpty(searchString))
                     {
-                        <h2 class="title mb--40">Welcome to The Garden Glow Blog!</h2>
+                        <h2 class="title mb--40">Welcome to The Tech Pulse!</h2>
                     }
                     else
                     {

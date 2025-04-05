@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace GrowBlog.Data.Migrations
+namespace TechTalkBlog.Data.Migrations
 {
     /// <inheritdoc />
     public partial class _008_Remove_BlogUserId_Foreign_Key : Migration

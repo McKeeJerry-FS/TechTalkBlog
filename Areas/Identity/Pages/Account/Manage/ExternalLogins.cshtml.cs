@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using GrowBlog.Models;
+using TechTalkBlog.Models;
 
-namespace GrowBlog.Areas.Identity.Pages.Account.Manage
+namespace TechTalkBlog.Areas.Identity.Pages.Account.Manage
 {
     public class ExternalLoginsModel : PageModel
     {

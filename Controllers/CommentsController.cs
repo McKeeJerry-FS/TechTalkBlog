@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GrowBlog.Data;
-using GrowBlog.Models;
+using TechTalkBlog.Data;
+using TechTalkBlog.Models;
 
-namespace GrowBlog.Controllers
+namespace TechTalkBlog.Controllers
 {
     [Authorize(Roles = "Admin, Moderator")]
     public class CommentsController : Controller

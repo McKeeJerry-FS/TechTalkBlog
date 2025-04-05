@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-GrowBlog-b79faf63-af62-4a06-9923-2e21182d81db</UserSecretsId>
+    <UserSecretsId>aspnet-TechTalkBlog-b79faf63-af62-4a06-9923-2e21182d81db</UserSecretsId>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>  
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>

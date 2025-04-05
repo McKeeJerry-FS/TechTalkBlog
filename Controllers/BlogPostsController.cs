@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GrowBlog.Data;
-using GrowBlog.Helpers;
-using GrowBlog.Models; 
-using GrowBlog.Services.Interfaces;
+using TechTalkBlog.Data;
+using TechTalkBlog.Helpers;
+using TechTalkBlog.Models; 
+using TechTalkBlog.Services.Interfaces;
 using X.PagedList;
 
-namespace GrowBlog.Controllers
+namespace TechTalkBlog.Controllers
 {
     
     public class BlogPostsController : Controller

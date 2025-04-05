@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using GrowBlog.Models;
+using TechTalkBlog.Models;
 
-namespace GrowBlog.Data
+namespace TechTalkBlog.Data
 {
     public class ApplicationDbContext : IdentityDbContext<BlogUser>
     {

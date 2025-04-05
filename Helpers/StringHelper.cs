@@ -2,7 +2,7 @@
 using System.Text;
 using System.Globalization;
 
-namespace GrowBlog.Helpers
+namespace TechTalkBlog.Helpers
 {
     public static class StringHelper
     {

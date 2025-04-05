@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using GrowBlog.Models;
-using GrowBlog.Services.Interfaces;
+using TechTalkBlog.Models;
+using TechTalkBlog.Services.Interfaces;
 
-namespace GrowBlog.Areas.Identity.Pages.Account.Manage
+namespace TechTalkBlog.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {

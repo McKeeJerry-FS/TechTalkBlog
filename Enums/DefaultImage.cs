@@ -1,4 +1,4 @@
-﻿namespace GrowBlog.Enums
+﻿namespace TechTalkBlog.Enums
 {
     public enum DefaultImage
     {

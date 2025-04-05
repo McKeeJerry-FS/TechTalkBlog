@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GrowBlog.Data;
-using GrowBlog.Models;
-using GrowBlog.Services.Interfaces;
+using TechTalkBlog.Data;
+using TechTalkBlog.Models;
+using TechTalkBlog.Services.Interfaces;
 
-namespace GrowBlog.Controllers
+namespace TechTalkBlog.Controllers
 {
     [Authorize]
     public class CategoriesController : Controller

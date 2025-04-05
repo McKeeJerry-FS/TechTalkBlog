@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using GrowBlog.Models;
+using TechTalkBlog.Models;
 
-namespace GrowBlog.Areas.Identity.Pages.Account
+namespace TechTalkBlog.Areas.Identity.Pages.Account
 {
     public class LogoutModel : PageModel
     {

@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using GrowBlog.Models;
+using TechTalkBlog.Models;
 
-namespace GrowBlog.Areas.Identity.Pages.Account
+namespace TechTalkBlog.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {

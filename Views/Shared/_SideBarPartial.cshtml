@@ -1,7 +1,7 @@
-﻿@using GrowBlog.Services.Interfaces
+﻿@using TechTalkBlog.Services.Interfaces
 @inject IBlogService _blogService
 @inject IImageService _imageService
-@using GrowBlog.Enums
+@using TechTalkBlog.Enums
 
 
 
@@ -42,7 +42,7 @@
     <!-- End Single Widget  -->
     <!-- Start Single Widget  -->
     <div class="axil-single-widget widget widget_postlist mb-30">
-        <h5 class="widget-title">Popular on Garden Glow Blog</h5>
+        <h5 class="widget-title">Popular on Blogar</h5>
         <!-- Start Post List  -->
         <div class="post-medium-block">
             @foreach (BlogPost blogPost in (await _blogService.GetPopularBlogsAsync()).Take(5))
