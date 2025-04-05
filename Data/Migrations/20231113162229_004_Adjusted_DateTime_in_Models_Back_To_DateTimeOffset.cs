@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace TechTalkBlog.Data.Migrations
+namespace GrowBlog.Data.Migrations
 {
     /// <inheritdoc />
     public partial class _004_Adjusted_DateTime_in_Models_Back_To_DateTimeOffset : Migration

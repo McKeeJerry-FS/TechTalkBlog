@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TechTalkBlog.Models
+namespace GrowBlog.Models
 {
     public class BlogPost
     {

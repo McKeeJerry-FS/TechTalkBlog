@@ -1,4 +1,4 @@
-﻿namespace TechTalkBlog.Services.Interfaces
+﻿namespace GrowBlog.Services.Interfaces
 {
     public interface IBlogTagService
     {

@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using TechTalkBlog.Models;
+using GrowBlog.Models;
 
-namespace TechTalkBlog.Areas.Identity.Pages.Account.Manage
+namespace GrowBlog.Areas.Identity.Pages.Account.Manage
 {
     public class PersonalDataModel : PageModel
     {

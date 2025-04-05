@@ -1,6 +1,6 @@
-﻿using TechTalkBlog.Models;
+﻿using GrowBlog.Models;
 
-namespace TechTalkBlog.Services.Interfaces
+namespace GrowBlog.Services.Interfaces
 {
     public interface IBlogService
     {

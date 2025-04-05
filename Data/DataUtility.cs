@@ -1,10 +1,10 @@
 ﻿using Npgsql;
 using Microsoft.AspNetCore.Identity;
-using TechTalkBlog.Models;
+using GrowBlog.Models;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace TechTalkBlog.Data
+namespace GrowBlog.Data
 {
     public static class DataUtility
     {

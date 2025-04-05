@@ -3,10 +3,10 @@ using MailKit.Security;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using MimeKit;
 using Microsoft.Extensions.Options;
-using TechTalkBlog.Models;
+using GrowBlog.Models;
 
 
-namespace TechTalkBlog.Services
+namespace GrowBlog.Services
 {
     public class EmailService : IEmailSender
     {

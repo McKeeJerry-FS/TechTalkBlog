@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TechTalkBlog.Models;
+using GrowBlog.Models;
 
-namespace TechTalkBlog.Controllers
+namespace GrowBlog.Controllers
 {
     public class HomeController : Controller
     {

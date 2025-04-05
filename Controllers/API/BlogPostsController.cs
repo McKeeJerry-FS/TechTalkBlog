@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TechTalkBlog.Data;
-using TechTalkBlog.Models;
+using GrowBlog.Data;
+using GrowBlog.Models;
 
-namespace TechTalkBlog.Controllers.API
+namespace GrowBlog.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]

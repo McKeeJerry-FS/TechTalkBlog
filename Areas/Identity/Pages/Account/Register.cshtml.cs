@@ -18,9 +18,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using TechTalkBlog.Models;
+using GrowBlog.Models;
 
-namespace TechTalkBlog.Areas.Identity.Pages.Account
+namespace GrowBlog.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {

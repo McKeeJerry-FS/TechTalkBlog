@@ -1,7 +1,7 @@
-﻿using TechTalkBlog.Services.Interfaces;
-using TechTalkBlog.Enums;
+﻿using GrowBlog.Services.Interfaces;
+using GrowBlog.Enums;
 
-namespace TechTalkBlog.Services
+namespace GrowBlog.Services
 {
     public class ImageService : IImageService
     {

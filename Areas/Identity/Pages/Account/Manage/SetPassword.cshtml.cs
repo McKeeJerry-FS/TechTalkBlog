@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TechTalkBlog.Models;
+using GrowBlog.Models;
 
-namespace TechTalkBlog.Areas.Identity.Pages.Account.Manage
+namespace GrowBlog.Areas.Identity.Pages.Account.Manage
 {
     public class SetPasswordModel : PageModel
     {

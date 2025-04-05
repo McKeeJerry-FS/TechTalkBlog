@@ -10,9 +10,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using TechTalkBlog.Models;
+using GrowBlog.Models;
 
-namespace TechTalkBlog.Areas.Identity.Pages.Account
+namespace GrowBlog.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailChangeModel : PageModel
     {

@@ -1,4 +1,4 @@
-namespace TechTalkBlog.Models
+namespace GrowBlog.Models
 {
     public class ErrorViewModel
     {

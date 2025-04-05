@@ -1,4 +1,4 @@
-﻿@model IPagedList<TechTalkBlog.Models.BlogPost>
+﻿@model IPagedList<GrowBlog.Models.BlogPost>
 @inject IImageService _imageService
 @inject IBlogService _BlogService
 @inject UserManager<BlogUser> _UserManager
@@ -21,7 +21,7 @@
                 <div class="page-title">
                     @if (string.IsNullOrEmpty(searchString))
                     {
-                        <h2 class="title mb--40">Welcome to your Favorite Posts on The Tech Pulse!</h2>
+                        <h2 class="title mb--40">Welcome to your Favorite Posts on The Garden Glow Blog!</h2>
                     }
                     else
                     {

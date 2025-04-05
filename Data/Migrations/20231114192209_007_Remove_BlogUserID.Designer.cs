@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using TechTalkBlog.Data;
+using GrowBlog.Data;
 
 #nullable disable
 
-namespace TechTalkBlog.Data.Migrations
+namespace GrowBlog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231114192209_007_Remove_BlogUserID")]
@@ -176,7 +176,7 @@ namespace TechTalkBlog.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.BlogPost", b =>
+            modelBuilder.Entity("GrowBlog.Models.BlogPost", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -231,7 +231,7 @@ namespace TechTalkBlog.Data.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.BlogUser", b =>
+            modelBuilder.Entity("GrowBlog.Models.BlogUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -311,7 +311,7 @@ namespace TechTalkBlog.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.Category", b =>
+            modelBuilder.Entity("GrowBlog.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -339,7 +339,7 @@ namespace TechTalkBlog.Data.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.Comment", b =>
+            modelBuilder.Entity("GrowBlog.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -377,7 +377,7 @@ namespace TechTalkBlog.Data.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.Tag", b =>
+            modelBuilder.Entity("GrowBlog.Models.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -401,13 +401,13 @@ namespace TechTalkBlog.Data.Migrations
 
             modelBuilder.Entity("BlogPostTag", b =>
                 {
-                    b.HasOne("TechTalkBlog.Models.BlogPost", null)
+                    b.HasOne("GrowBlog.Models.BlogPost", null)
                         .WithMany()
                         .HasForeignKey("BlogPostsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TechTalkBlog.Models.Tag", null)
+                    b.HasOne("GrowBlog.Models.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -425,7 +425,7 @@ namespace TechTalkBlog.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("TechTalkBlog.Models.BlogUser", null)
+                    b.HasOne("GrowBlog.Models.BlogUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -434,7 +434,7 @@ namespace TechTalkBlog.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("TechTalkBlog.Models.BlogUser", null)
+                    b.HasOne("GrowBlog.Models.BlogUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -449,7 +449,7 @@ namespace TechTalkBlog.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TechTalkBlog.Models.BlogUser", null)
+                    b.HasOne("GrowBlog.Models.BlogUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -458,16 +458,16 @@ namespace TechTalkBlog.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("TechTalkBlog.Models.BlogUser", null)
+                    b.HasOne("GrowBlog.Models.BlogUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.BlogPost", b =>
+            modelBuilder.Entity("GrowBlog.Models.BlogPost", b =>
                 {
-                    b.HasOne("TechTalkBlog.Models.Category", "Category")
+                    b.HasOne("GrowBlog.Models.Category", "Category")
                         .WithMany("BlogPosts")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -476,13 +476,13 @@ namespace TechTalkBlog.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.Comment", b =>
+            modelBuilder.Entity("GrowBlog.Models.Comment", b =>
                 {
-                    b.HasOne("TechTalkBlog.Models.BlogUser", "Author")
+                    b.HasOne("GrowBlog.Models.BlogUser", "Author")
                         .WithMany("Comments")
                         .HasForeignKey("AuthorId");
 
-                    b.HasOne("TechTalkBlog.Models.BlogPost", "BlogPost")
+                    b.HasOne("GrowBlog.Models.BlogPost", "BlogPost")
                         .WithMany("Comments")
                         .HasForeignKey("BlogPostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -493,17 +493,17 @@ namespace TechTalkBlog.Data.Migrations
                     b.Navigation("BlogPost");
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.BlogPost", b =>
+            modelBuilder.Entity("GrowBlog.Models.BlogPost", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.BlogUser", b =>
+            modelBuilder.Entity("GrowBlog.Models.BlogUser", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("TechTalkBlog.Models.Category", b =>
+            modelBuilder.Entity("GrowBlog.Models.Category", b =>
                 {
                     b.Navigation("BlogPosts");
                 });
