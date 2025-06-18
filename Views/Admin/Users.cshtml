@@ -1,0 +1,46 @@
+@model IEnumerable<TechTalkBlog.ViewModels.UserWithRolesViewModel>
+@{
+    ViewData["Title"] = "Registered Users";
+}
+<h2>Registered Users</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Roles</th>
+            <th>Assign Role</th>
+            <th>Remove Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.User.Email</td>
+                <td>@item.User.FullName</td>
+                <td>@string.Join(", ", item.Roles)</td>
+                <td>
+                    <form asp-action="AssignRole" asp-controller="Admin" method="post" class="d-inline">
+                        <input type="hidden" name="userId" value="@item.User.Id" />
+                        <select name="role" class="form-select form-select-sm d-inline w-auto">
+                            <option value="Admin">Admin</option>
+                            <option value="Moderator">Moderator</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary">Assign</button>
+                    </form>
+                </td>
+                <td>
+                    @foreach (var role in item.Roles)
+                    {
+                        <form asp-action="RemoveRole" asp-controller="Admin" method="post" class="d-inline">
+                            <input type="hidden" name="userId" value="@item.User.Id" />
+                            <input type="hidden" name="role" value="@role" />
+                            <button type="submit" class="btn btn-sm btn-danger">Remove @role</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

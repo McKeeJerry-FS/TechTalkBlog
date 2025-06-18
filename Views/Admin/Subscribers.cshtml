@@ -1,0 +1,22 @@
+@model IEnumerable<TechTalkBlog.Models.Subscriber>
+@{
+    ViewData["Title"] = "Subscribers";
+}
+<h2>Subscribers</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Subscribed On</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var subscriber in Model)
+        {
+            <tr>
+                <td>@subscriber.Email</td>
+                <td>@subscriber.SubscribedOn.ToString("g")</td>
+            </tr>
+        }
+    </tbody>
+</table>
