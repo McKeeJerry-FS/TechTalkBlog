@@ -282,6 +282,28 @@ namespace TechTalkBlog.Controllers
                 // new BlogPost Service utilized
                 await _blogService.CreateBlogPostAsync(blogPost, selected!);
 
+                // Notify all subscribers if the post is published
+                if (blogPost.IsPublished)
+                {
+                    var subscribers = _context.Subscribers.Select(s => s.Email).ToList();
+                    if (subscribers.Any())
+                    {
+                        string subject = $" Tech Pulse New Post alert: {blogPost.Title}";
+                        string url = Url.Action("Details", "BlogPosts", new { slug = blogPost.Slug }, protocol: Request.Scheme, host: Request.Host.ToString());
+                        if (string.IsNullOrEmpty(url))
+                        {
+                            url = $"{Request.Scheme}://{Request.Host}/BlogPosts/Details/{blogPost.Slug}";
+                        }
+                        string message = $"<p>A new blog post titled '<strong>{blogPost.Title}</strong>' has been published!</p>" +
+                                        $"<p>{blogPost.Abstract}</p>" +
+                                        $"<p><a href='{url}'>Click here to read the post</a></p>";
+                        foreach (var email in subscribers)
+                        {
+                            await _emailService.SendEmailAsync(email, subject, message);
+                        }
+                    }
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             IEnumerable<int> currentTags = blogPost.Tags!.Select(c => c.Id);
@@ -539,9 +561,12 @@ namespace TechTalkBlog.Controllers
                 {
                     //result = false;
                     blogLike = await _context.BlogLikes.FirstOrDefaultAsync(bl => bl.BlogPostId == blogPostId && bl.BlogUserId == blogUserId);
-                    blogLike.IsLiked = !blogLike.IsLiked;
+                    if (blogLike != null)
+                    {
+                        blogLike.IsLiked = !blogLike.IsLiked;
+                        result = blogLike.IsLiked;
+                    }
                 }
-                result = blogLike.IsLiked;
                 await _context.SaveChangesAsync();
             }
             return Json(new
@@ -564,7 +589,7 @@ namespace TechTalkBlog.Controllers
             int page = pageNum ?? 1;
 
             IPagedList<BlogPost> blogPosts = await (await _blogService.GetAllBlogPostsAsync())
-                                                                     .ToPagedListAsync(page, pageSize);
+                                                                    .ToPagedListAsync(page, pageSize);
             return View(blogPosts);
         }
 
@@ -669,7 +694,7 @@ namespace TechTalkBlog.Controllers
 
         private async Task<bool> BlogPostExistsAsync(int id)
         {
-          return ((await _blogService.GetBlogPostsAsync()).Any(e => e.Id == id));
+            return ((await _blogService.GetBlogPostsAsync()).Any(e => e.Id == id));
         }
     }
 }
