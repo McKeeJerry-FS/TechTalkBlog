@@ -215,6 +215,10 @@ namespace TechTalkBlog.Controllers
                 return NotFound();
             }
 
+            // Increment view count
+            blogPost.ViewCount++;
+            await _blogService.UpdateBlogPostAsync(blogPost);
+
             return View(blogPost);
         }
 

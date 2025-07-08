@@ -353,7 +353,7 @@ namespace TechTalkBlog.Services
                     .Include(b => b.Category)
                     .FirstOrDefaultAsync(m => m.Id == id);
 
-                return blogPost;
+                return blogPost!;
 
             }
             catch (Exception)
@@ -423,24 +423,23 @@ namespace TechTalkBlog.Services
             {
                 searchString = searchString.Trim().ToLower();
                 IEnumerable<BlogPost> blogPosts = _context.Posts
-                                                          .Where(b => b.IsPublished == true && b.IsArchived == false)
-                                                          .Where(b => b.Title!.ToLower().Contains(searchString)
-                                                                   || (!string.IsNullOrEmpty(b.Abstract) && b.Abstract.ToLower().Contains(searchString))
-                                                                   || b.Content!.ToLower().Contains(searchString)
-                                                                   || b.Tags.Any(t => t.Name!.ToLower().Contains(searchString))
-                                                                   || b.Category!.Name!.ToLower().Contains(searchString)
-                                                                   || b.Comments.Any(c => c.Body!.ToLower().Contains(searchString)
-                                                                                       || c.Author!.FirstName!.ToLower().Contains(searchString)
-                                                                                       || c.Author!.LastName!.ToLower().Contains(searchString))
-                                                                 )
-                                                           .Include(b => b.Category)
-                                                           .Include(b => b.Tags)
-                                                           .Include(b => b.Comments)
-                                                            .ThenInclude(b => b.Author)
-                                                           .AsNoTracking()
-                                                           .OrderByDescending(b => b.CreatedDate)
-                                                           .AsEnumerable();
-
+                                                        .Where(b => b.IsPublished == true && b.IsArchived == false)
+                                                        .Where(b => b.Title!.ToLower().Contains(searchString)
+                                                                || (!string.IsNullOrEmpty(b.Abstract) && b.Abstract.ToLower().Contains(searchString))
+                                                                || b.Content!.ToLower().Contains(searchString)
+                                                                || b.Tags.Any(t => t.Name!.ToLower().Contains(searchString))
+                                                                || b.Category!.Name!.ToLower().Contains(searchString)
+                                                                || b.Comments.Any(c => c.Body!.ToLower().Contains(searchString)
+                                                                                    || c.Author!.FirstName!.ToLower().Contains(searchString)
+                                                                                    || c.Author!.LastName!.ToLower().Contains(searchString))
+                                                                )
+                                                        .Include(b => b.Category)
+                                                        .Include(b => b.Tags)
+                                                        .Include(b => b.Comments)
+                                                        .ThenInclude(b => b.Author)
+                                                        .AsNoTracking()
+                                                        .OrderByDescending(b => b.CreatedDate)
+                                                        .AsEnumerable();
                 return blogPosts;
             }
             catch (Exception)
@@ -474,7 +473,7 @@ namespace TechTalkBlog.Services
                 {
                     // Editing an existing BlogPost 
                     BlogPost? blogPost = await _context.Posts.AsNoTracking()
-                                                             .FirstOrDefaultAsync(b => b.Id == blogPostId);
+                                                            .FirstOrDefaultAsync(b => b.Id == blogPostId);
                     string? oldSlug = blogPost?.Slug;
                     if (!string.Equals(oldSlug, slug))
                     {
@@ -486,7 +485,7 @@ namespace TechTalkBlog.Services
             }
             catch (Exception ex)
             {
-
+                _logger.LogError(ex, "Error checking slug validity");
                 throw;
             }
         } 

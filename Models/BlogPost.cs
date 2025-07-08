@@ -31,6 +31,7 @@ namespace TechTalkBlog.Models
         public bool IsArchived { get; set; }
         public bool IsPublished { get; set; }
         public int CategoryId { get; set; } // Foreign Key
+        public int ViewCount { get; set; } = 0;
 
 
         // Image Properties
