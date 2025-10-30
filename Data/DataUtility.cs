@@ -6,7 +6,6 @@ using System;
 using System.Threading.Tasks;
 using TechTalkBlog.Models;
 
-
 namespace TechTalkBlog.Data
 {
     public static class DataUtility
@@ -17,7 +16,7 @@ namespace TechTalkBlog.Data
 
         public static string? GetConnectionString(IConfiguration config)
         {
-            // 1) Normal config (appsettings / user-secrets)
+            // 1) Normal config (appsettings / env: ConnectionStrings__DefaultConnection)
             var cs = config.GetConnectionString("DefaultConnection");
             if (!string.IsNullOrWhiteSpace(cs)) return cs;
 
@@ -63,17 +62,41 @@ namespace TechTalkBlog.Data
 
         public static async Task ManageDataAsync(IServiceProvider serviceProvider)
         {
-            var dbContextSvc = serviceProvider.GetRequiredService<ApplicationDbContext>();
-            var userManagerSvc = serviceProvider.GetRequiredService<UserManager<BlogUser>>();
-            var configurationSvc = serviceProvider.GetRequiredService<IConfiguration>();
-            var roleManagerSvc = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var dbContextSvc    = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            var userManagerSvc  = serviceProvider.GetRequiredService<UserManager<BlogUser>>();
+            var configuration   = serviceProvider.GetRequiredService<IConfiguration>();
+            var roleManagerSvc  = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            // align the database by checking the migrations
+            await WaitForDatabaseAsync(dbContextSvc); // new: retry until DB is reachable
             await dbContextSvc.Database.MigrateAsync();
 
-            // Seed some info
             await SeedRolesAsync(roleManagerSvc);
-            await SeedBlogUsersAsync(userManagerSvc, configurationSvc);
+            await SeedBlogUsersAsync(userManagerSvc, configuration);
+        }
+
+        private static async Task WaitForDatabaseAsync(DbContext db, int retries = 10, int delayMs = 2000)
+        {
+            var conn = (NpgsqlConnection)db.Database.GetDbConnection();
+
+            // Safe log of where we’re connecting (no secrets)
+            Console.WriteLine($"DB connecting to Host={conn.Host}; Port={conn.Port}; Database={conn.Database}; SSL Mode={conn.Settings.SslMode}");
+
+            for (int i = 1; i <= retries; i++)
+            {
+                try
+                {
+                    await conn.OpenAsync();
+                    await conn.CloseAsync();
+                    Console.WriteLine("DB reachable.");
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"DB not ready (attempt {i}/{retries}): {ex.Message}");
+                    if (i == retries) throw;
+                    await Task.Delay(delayMs);
+                }
+            }
         }
 
         private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
@@ -107,16 +130,13 @@ namespace TechTalkBlog.Data
                     EmailConfirmed = true
                 };
 
-                
                 BlogUser? blogUser = await userManager.FindByEmailAsync(adminEmail!);
-                
 
                 if (blogUser == null)
                 {
                     await userManager.CreateAsync(adminUser, adminPassword!);
                     await userManager.AddToRoleAsync(adminUser, _adminRole!);
                 }
-
 
                 BlogUser? moderatorUser = new()
                 {
@@ -128,13 +148,12 @@ namespace TechTalkBlog.Data
                 };
 
                 blogUser = await userManager.FindByEmailAsync(moderatorEmail!);
-                
+
                 if (blogUser == null)
                 {
                     await userManager.CreateAsync(moderatorUser, moderatorPassword!);
                     await userManager.AddToRoleAsync(moderatorUser, _moderatorRole!);
                 }
-
             }
             catch (Exception ex)
             {
@@ -145,7 +164,6 @@ namespace TechTalkBlog.Data
                 Console.ResetColor();
                 throw;
             }
-
         }
     }
 }
