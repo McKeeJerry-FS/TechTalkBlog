@@ -67,7 +67,7 @@ namespace TechTalkBlog.Data
             var configuration   = serviceProvider.GetRequiredService<IConfiguration>();
             var roleManagerSvc  = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            await WaitForDatabaseAsync(dbContextSvc); // new: retry until DB is reachable
+            await WaitForDatabaseAsync(dbContextSvc); // retry until DB is reachable
             await dbContextSvc.Database.MigrateAsync();
 
             await SeedRolesAsync(roleManagerSvc);
@@ -79,7 +79,8 @@ namespace TechTalkBlog.Data
             var conn = (NpgsqlConnection)db.Database.GetDbConnection();
 
             // Safe log of where we’re connecting (no secrets)
-            Console.WriteLine($"DB connecting to Host={conn.Host}; Port={conn.Port}; Database={conn.Database}; SSL Mode={conn.Settings.SslMode}");
+            var csb = new NpgsqlConnectionStringBuilder(conn.ConnectionString);
+            Console.WriteLine($"DB connecting to Host={csb.Host}; Port={csb.Port}; Database={csb.Database}; SSL Mode={csb.SslMode}");
 
             for (int i = 1; i <= retries; i++)
             {

@@ -5,7 +5,7 @@ namespace TechTalkBlog.ViewModels
 {
     public class UserWithRolesViewModel
     {
-        public BlogUser User { get; set; }
-        public List<string> Roles { get; set; }
+        public BlogUser User { get; set; } = new();
+        public List<string> Roles { get; set; } = new();
     }
 }
