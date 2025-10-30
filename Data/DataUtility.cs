@@ -1,43 +1,64 @@
-﻿using Npgsql;
-using Microsoft.AspNetCore.Identity;
-using TechTalkBlog.Models;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
+using System;
+using System.Threading.Tasks;
+using TechTalkBlog.Models;
 
 
 namespace TechTalkBlog.Data
 {
     public static class DataUtility
     {
-
         // Admin & Moderator - use with roles
         private const string? _adminRole = "Admin";
         private const string? _moderatorRole = "Moderator";
- 
 
-        public static string GetConnectionString(IConfiguration configuration)
+        public static string? GetConnectionString(IConfiguration config)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-            return string.IsNullOrEmpty(databaseUrl) ? connectionString! : BuildConnectionString(databaseUrl);
+            // 1) Normal config (appsettings / user-secrets)
+            var cs = config.GetConnectionString("DefaultConnection");
+            if (!string.IsNullOrWhiteSpace(cs)) return cs;
+
+            // 2) Railway / Heroku URL-style variable
+            var url = Environment.GetEnvironmentVariable("RAILWAY_DATABASE_URL")
+                      ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+            if (!string.IsNullOrWhiteSpace(url))
+                return BuildFromUrl(url);
+
+            // 3) Railway PG* vars
+            var host = Environment.GetEnvironmentVariable("PGHOST");
+            var db   = Environment.GetEnvironmentVariable("PGDATABASE");
+            var user = Environment.GetEnvironmentVariable("PGUSER");
+            var pwd  = Environment.GetEnvironmentVariable("PGPASSWORD");
+            var port = Environment.GetEnvironmentVariable("PGPORT") ?? "5432";
+
+            if (!string.IsNullOrWhiteSpace(host) &&
+                !string.IsNullOrWhiteSpace(db) &&
+                !string.IsNullOrWhiteSpace(user) &&
+                !string.IsNullOrWhiteSpace(pwd))
+            {
+                return $"Host={host};Port={port};Database={db};Username={user};Password={pwd};SSL Mode=Require;Trust Server Certificate=true";
+            }
+
+            return null;
         }
 
-        private static string BuildConnectionString(string databaseUrl)
+        private static string BuildFromUrl(string url)
         {
-            //Provides an object representation of a uniform resource identifier (URI) and easy access to the parts of the URI.
-            var databaseUri = new Uri(databaseUrl);
-            var userInfo = databaseUri.UserInfo.Split(':');
-            //Provides a simple way to create and manage the contents of connection strings used by the NpgsqlConnection class.
-            var builder = new NpgsqlConnectionStringBuilder
-            {
-                Host = databaseUri.Host,
-                Port = databaseUri.Port,
-                Username = userInfo[0],
-                Password = userInfo[1],
-                Database = databaseUri.LocalPath.TrimStart('/'),
-                SslMode = SslMode.Prefer,
-                TrustServerCertificate = true
-            };
-            return builder.ToString();
+            // Accept postgres:// or postgresql://
+            url = url.Replace("postgres://", "postgresql://", StringComparison.OrdinalIgnoreCase);
+            var uri = new Uri(url);
+
+            var userInfo = uri.UserInfo.Split(':', 2);
+            var user = Uri.UnescapeDataString(userInfo[0]);
+            var pass = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+            var db   = uri.AbsolutePath.TrimStart('/');
+            var host = uri.Host;
+            var port = uri.IsDefaultPort ? 5432 : uri.Port;
+
+            return $"Host={host};Port={port};Database={db};Username={user};Password={pass};SSL Mode=Require;Trust Server Certificate=true";
         }
 
         public static async Task ManageDataAsync(IServiceProvider serviceProvider)
